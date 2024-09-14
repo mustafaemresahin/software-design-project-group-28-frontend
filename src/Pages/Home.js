@@ -11,7 +11,11 @@ const WelcomeCard = ({ onButtonClick }) => (
             <Typography variant="body1" paragraph>
                 This is a paragraph of text. Explore our website to find more interesting features.
             </Typography>
-            <Button variant="contained" color="primary" onClick={onButtonClick}>
+            <Button 
+                variant="contained" 
+                onClick={onButtonClick}
+                sx={{ backgroundColor: '#7FA1C3', color: '#ffffff', '&:hover': { backgroundColor: '#5A7A9F' } }} // Customize hover effect
+            >
                 Go to Login
             </Button>
         </CardContent>
