@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 
-const Login = () => {
+const Registration = () => {
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Handle login logic here
-        console.log('Email:', email, 'Password:', password);
+        // Add registration logic here (e.g., form validation, API call)
+        console.log('Name:', name, 'Email:', email, 'Password:', password, 'Confirm Password:', confirmPassword);
     };
 
     const styles = {
@@ -52,22 +53,19 @@ const Login = () => {
             outline: 'none',
             transition: 'border-color 0.3s ease',
         },
-        inputFocus: {
-            borderColor: '#007bff',
-        },
         button: {
             width: '100%',
             padding: '12px',
             fontSize: '1rem',
             color: '#fff',
-            backgroundColor: '#007bff',
+            backgroundColor: '#28a745',
             border: 'none',
             borderRadius: '4px',
             cursor: 'pointer',
             transition: 'background-color 0.3s ease',
         },
         buttonHover: {
-            backgroundColor: '#0056b3',
+            backgroundColor: '#218838',
         },
         link: {
             marginTop: '20px',
@@ -83,8 +81,19 @@ const Login = () => {
     return (
         <div style={styles.container}>
             <div style={styles.box}>
-                <h1 style={styles.title}>Welcome Back!</h1>
+                <h1 style={styles.title}>Create an Account</h1>
                 <form onSubmit={handleSubmit}>
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label} htmlFor="name">Name</label>
+                        <input
+                            type="text"
+                            id="name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                    </div>
                     <div style={styles.inputGroup}>
                         <label style={styles.label} htmlFor="email">Email</label>
                         <input
@@ -107,19 +116,25 @@ const Login = () => {
                             style={styles.input}
                         />
                     </div>
-                    <button
-                        type="submit"
-                        style={styles.button}
-                    >
-                        Login
-                    </button>
+                    <div style={styles.inputGroup}>
+                        <label style={styles.label} htmlFor="confirmPassword">Confirm Password</label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                            style={styles.input}
+                        />
+                    </div>
+                    <button type="submit" style={styles.button}>Register</button>
                 </form>
                 <p>
-                    Don't have an account? <Link to="/signup" style={styles.link}>Sign up</Link>
+                    Already have an account? <a href="/login" style={styles.link}>Login here</a>
                 </p>
             </div>
         </div>
     );
 };
 
-export default Login;
+export default Registration;

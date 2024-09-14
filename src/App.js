@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Home from './Pages/Home';
 import Login from './Pages/Login';
+import Registration from './Pages/Registration';
+import Navbar from './Components/Navbar'; // Import the Navbar
+
 import EventManagementForm from './Pages/EventManagementForm';
 import Navbar from './Components/Navbar';
 import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
@@ -33,6 +36,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Registration />} />
             <Route path="/event-management" element={<EventManagementForm />} />
           </Routes>
         </div>
