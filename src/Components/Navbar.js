@@ -49,6 +49,17 @@ const Navbar = () => {
                     >
                         Event Management
                     </Button>
+                    <Button 
+                        color="inherit" 
+                        component={Link} 
+                        to="/volunteer-history" 
+                        sx={{
+                            backgroundColor: isActive('/') ? '#495057' : 'inherit', // Darker shade for active
+                            '&:hover': { backgroundColor: isActive('/volunteer-history') ? '#495057' : '#3c4045' } // Hover effect
+                        }}
+                    >
+                        Volunteer History
+                    </Button>
                 </Box>
             </Toolbar>
         </AppBar>

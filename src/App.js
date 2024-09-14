@@ -4,6 +4,7 @@ import './App.css';
 import Home from './Pages/Home';
 import Login from './Pages/Login';
 import Registration from './Pages/Registration';
+import VolunteerHistory from './Pages/VolunteerHistory';
 import Navbar from './Components/Navbar';
 import EventManagementForm from './Pages/EventManagementForm';
 import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
