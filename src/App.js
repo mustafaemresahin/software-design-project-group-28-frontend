@@ -6,6 +6,7 @@ import Login from './Pages/Login';
 import Registration from './Pages/Registration';
 import Navbar from './Components/Navbar';
 import EventManagementForm from './Pages/EventManagementForm';
+import VolunteerMatching from './Pages/VolunteerMatching';
 import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 
 const theme = createTheme({
@@ -36,6 +37,7 @@ function App() {
             <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Registration />} />
             <Route path="/event-management" element={<EventManagementForm />} />
+            <Route path="/volunteer-matching" element={<VolunteerMatching />} />
           </Routes>
         </div>
       </Router>
