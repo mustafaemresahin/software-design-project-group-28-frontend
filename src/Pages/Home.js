@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Typography, Button, Box, Card, CardContent } from '@mui/material';
 
 const WelcomeCard = ({ onButtonClick }) => (
-    <Card sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
+    <Card sx={{ maxWidth: 600, margin: 'auto', mt: 4, backgroundColor: '#F5EDED' }}>
         <CardContent>
             <Typography variant="h4" gutterBottom>
                 Welcome to My Website
@@ -14,7 +14,7 @@ const WelcomeCard = ({ onButtonClick }) => (
             <Button 
                 variant="contained" 
                 onClick={onButtonClick}
-                sx={{ backgroundColor: '#7FA1C3', color: '#ffffff', '&:hover': { backgroundColor: '#5A7A9F' } }} // Customize hover effect
+                sx={{ backgroundColor: '#6482AD', color: '#ffffff', '&:hover': { backgroundColor: '#7FA1C3' } }} // Customize hover effect
             >
                 Go to Login
             </Button>

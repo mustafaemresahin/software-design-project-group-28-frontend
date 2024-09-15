@@ -21,8 +21,8 @@ const Navbar = () => {
                         component={Link} 
                         to="/" 
                         sx={{
-                            backgroundColor: isActive('/') ? '#495057' : 'inherit', // Darker shade for active
-                            '&:hover': { backgroundColor: isActive('/') ? '#495057' : '#3c4045' } // Hover effect
+                            backgroundColor: isActive('/') ? '#7FA1C3' : 'inherit', // Darker shade for active
+                            '&:hover': { backgroundColor: isActive('/') ? '#7FA1C3' : '#7FA1C3' } // Hover effect
                         }}
                     >
                         Home
@@ -32,8 +32,8 @@ const Navbar = () => {
                         component={Link} 
                         to="/login" 
                         sx={{
-                            backgroundColor: isActive('/login') ? '#495057' : 'inherit', // Darker shade for active
-                            '&:hover': { backgroundColor: isActive('/login') ? '#495057' : '#3c4045' } // Hover effect
+                            backgroundColor: isActive('/login') ? '#7FA1C3' : 'inherit', // Darker shade for active
+                            '&:hover': { backgroundColor: isActive('/login') ? '#7FA1C3' : '#7FA1C3' } // Hover effect
                         }}
                     >
                         Login
@@ -41,14 +41,47 @@ const Navbar = () => {
                     <Button 
                         color="inherit" 
                         component={Link} 
+                        to="/notification" 
+                        sx={{
+                            backgroundColor: isActive('/notification') ? '#7FA1C3' : 'inherit', // Darker shade for active
+                            '&:hover': { backgroundColor: isActive('/notification') ? '#7FA1C3' : '#7FA1C3' } // Hover effect
+                        }}
+                    >
+                        Notifications
+                    </Button>
+                    <Button 
+                        color="inherit" 
+                        component={Link} 
                         to="/event-management" 
                         sx={{
-                            backgroundColor: isActive('/even-management') ? '#495057' : 'inherit', // Darker shade for active
-                            '&:hover': { backgroundColor: isActive('/login') ? '#495057' : '#3c4045' } // Hover effect
+                            backgroundColor: isActive('/event-management') ? '#7FA1C3' : 'inherit', // Darker shade for active
+                            '&:hover': { backgroundColor: isActive('/login') ? '#7FA1C3' : '#7FA1C3' } // Hover effect
                         }}
                     >
                         Event Management
                     </Button>
+                    <Button 
+                        color="inherit" 
+                        component={Link} 
+                        to="/volunteer-matching" 
+                        sx={{
+                            backgroundColor: isActive('/volunteer-matching') ? '#7FA1C3' : 'inherit', // Darker shade for active
+                            '&:hover': { backgroundColor: isActive('/volunteer-matching') ? '#7FA1C3' : '#7FA1C3' } // Hover effect
+                        }}
+                    >
+                        Volunteer Matching
+                    </Button>
+                    <Button 
+                        color="inherit" 
+                        component={Link} 
+                        to="/volunteer-history" 
+                        sx={{
+                            backgroundColor: isActive('/volunteer-history') ? '#495057' : 'inherit', // Darker shade for active
+                            '&:hover': { backgroundColor: isActive('/volunteer-history') ? '#495057' : '#3c4045' } // Hover effect
+                        }}
+                    >
+                        Volunteer History
+                        </Button>
                 </Box>
             </Toolbar>
         </AppBar>
