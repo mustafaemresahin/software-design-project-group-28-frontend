@@ -37,7 +37,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Registration />} />
+            <Route path="/signup" element={<Registration />} />
             <Route path="/event-management" element={<EventManagementForm />} />
             <Route path="/notification" element={<Notification/>} />
             <Route path="/volunteer-matching" element={<VolunteerMatching />} />
