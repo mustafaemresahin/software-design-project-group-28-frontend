@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Registration = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Add registration logic here (e.g., form validation, API call)
+        // Handle registration logic here
         console.log('Name:', name, 'Email:', email, 'Password:', password, 'Confirm Password:', confirmPassword);
     };
+
+    const handleMouseEnter = () => setIsHovered(true);
+    const handleMouseLeave = () => setIsHovered(false);
 
     const styles = {
         container: {
@@ -18,7 +23,6 @@ const Registration = () => {
             justifyContent: 'center',
             alignItems: 'center',
             height: '100vh',
-            backgroundColor: '#f0f2f5',
         },
         box: {
             backgroundColor: '#fff',
@@ -32,7 +36,7 @@ const Registration = () => {
         title: {
             fontSize: '2rem',
             marginBottom: '20px',
-            color: '#333',
+            color: '#6482AD',
         },
         inputGroup: {
             marginBottom: '20px',
@@ -58,14 +62,11 @@ const Registration = () => {
             padding: '12px',
             fontSize: '1rem',
             color: '#fff',
-            backgroundColor: '#28a745',
+            backgroundColor: isHovered ? 'rgb(127, 161, 195)' : 'rgb(100, 130, 173)',
             border: 'none',
             borderRadius: '4px',
             cursor: 'pointer',
             transition: 'background-color 0.3s ease',
-        },
-        buttonHover: {
-            backgroundColor: '#218838',
         },
         link: {
             marginTop: '20px',
@@ -127,10 +128,17 @@ const Registration = () => {
                             style={styles.input}
                         />
                     </div>
-                    <button type="submit" style={styles.button}>Register</button>
+                    <button
+                        type="submit"
+                        style={styles.button}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                    >
+                        Register
+                    </button>
                 </form>
                 <p>
-                    Already have an account? <a href="/login" style={styles.link}>Login here</a>
+                    Already have an account? <Link to="/login" style={styles.link} onMouseEnter={e => e.target.style.textDecoration = 'underline'} onMouseLeave={e => e.target.style.textDecoration = 'none'}>Login</Link>
                 </p>
             </div>
         </div>
