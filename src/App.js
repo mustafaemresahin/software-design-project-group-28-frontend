@@ -3,8 +3,9 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Home from './Pages/Home';
 import Login from './Pages/Login';
+import Navbar from './Components/Navbar'; // Import the Navbar
+import Notification from './Pages/Notification';
 import Registration from './Pages/Registration';
-import Navbar from './Components/Navbar';
 import EventManagementForm from './Pages/EventManagementForm';
 import VolunteerMatching from './Pages/VolunteerMatching';
 import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
@@ -26,6 +27,7 @@ const theme = createTheme({
 });
 
 function App() {
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -37,6 +39,7 @@ function App() {
             <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Registration />} />
             <Route path="/event-management" element={<EventManagementForm />} />
+            <Route path="/notification" element={<Notification/>} />
             <Route path="/volunteer-matching" element={<VolunteerMatching />} />
           </Routes>
         </div>

@@ -41,6 +41,17 @@ const Navbar = () => {
                     <Button 
                         color="inherit" 
                         component={Link} 
+                        to="/notification" 
+                        sx={{
+                            backgroundColor: isActive('/login') ? '#495057' : 'inherit', // Darker shade for active
+                            '&:hover': { backgroundColor: isActive('/login') ? '#495057' : '#3c4045' } // Hover effect
+                        }}
+                    >
+                        Notifications
+                    </Button>
+                    <Button 
+                        color="inherit" 
+                        component={Link} 
                         to="/event-management" 
                         sx={{
                             backgroundColor: isActive('/even-management') ? '#495057' : 'inherit', // Darker shade for active
