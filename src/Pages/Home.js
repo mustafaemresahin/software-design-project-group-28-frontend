@@ -54,6 +54,7 @@ const FeatureCard = styled(Card)({
   '&:hover .feature-title': {
     color: '#F5EDED !important',
   },
+  cursor: 'pointer',
 });
 
 const Home = () => {
@@ -62,6 +63,16 @@ const Home = () => {
   const navigateToLogin = () => {
     navigate('/login');
   };
+
+  const handleCardClick = (path) => {
+    navigate(path);
+  };
+
+  const features = [
+    { title: 'Manage Events', path: '/event-management', description: 'Create and manage events with ease. Track participants and ensure successful event execution.' },
+    { title: 'Volunteer Matching', path: '/volunteer-matching', description: 'Match volunteers to the right events based on their skills and availability. Optimize your impact.' },
+    { title: 'Real-Time Notifications', path: '/notification', description: 'Keep everyone informed with real-time notifications for event updates and volunteer assignments.' },
+  ];
 
   return (
     <Container maxWidth="lg" sx={{ mt: 3, mb: 5 }}>
@@ -78,28 +89,26 @@ const Home = () => {
       </HeroSection>
 
       <Grid container spacing={4} sx={{ mt: -2 }}>
-        {['Manage Events', 'Volunteer Matching', 'Real-Time Notifications'].map((feature, index) => (
-          <Grid item xs={12} md={4} key={index}>
-            <Fade in timeout={500 + index * 500}>
-              <FeatureCard>
-                <Typography
-                  variant="h5"
-                  className="feature-title"
-                  gutterBottom
-                  sx={{ color: '#6482AD', fontWeight: 'bold', transition: 'color 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) !important' }}
-                >
-                  {feature}
-                </Typography>
-                <Typography variant="body2">
-                  {feature === 'Manage Events' && 'Create and manage events with ease. Track participants and ensure successful event execution.'}
-                  {feature === 'Volunteer Matching' && 'Match volunteers to the right events based on their skills and availability. Optimize your impact.'}
-                  {feature === 'Real-Time Notifications' && 'Keep everyone informed with real-time notifications for event updates and volunteer assignments.'}
-                </Typography>
-              </FeatureCard>
-            </Fade>
-          </Grid>
-        ))}
-      </Grid>
+  {features.map((feature, index) => (
+    <Grid item xs={12} md={4} key={index}>
+      <Fade in timeout={500 + index * 500}>
+        <FeatureCard onClick={() => handleCardClick(feature.path)}>
+          <Typography
+            variant="h5"
+            className="feature-title"
+            gutterBottom
+            sx={{ color: '#6482AD', fontWeight: 'bold', transition: 'color 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) !important' }}
+          >
+            {feature.title}
+          </Typography>
+          <Typography variant="body2">
+            {feature.description}
+          </Typography>
+        </FeatureCard>
+      </Fade>
+    </Grid>
+  ))}
+</Grid>
     </Container>
   );
 };
