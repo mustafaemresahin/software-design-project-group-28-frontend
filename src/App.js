@@ -7,6 +7,7 @@ import Navbar from './Components/Navbar'; // Import the Navbar
 import Notification from './Pages/Notification';
 import Registration from './Pages/Registration';
 import EventManagementForm from './Pages/EventManagementForm';
+import Profile from './Pages/Profile';
 import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 
 const theme = createTheme({
@@ -36,9 +37,10 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Registration />} />
+            <Route path="/signup" element={<Registration />} />
             <Route path="/event-management" element={<EventManagementForm />} />
             <Route path="/notification" element={<Notification/>} />
+            <Route path="/profile" element={<Profile/>} />
           </Routes>
         </div>
       </Router>

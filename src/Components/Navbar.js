@@ -60,6 +60,17 @@ const Navbar = () => {
                     >
                         Event Management
                     </Button>
+                    <Button
+                        color="inherit" 
+                        component={Link} 
+                        to="/profile" 
+                        sx={{
+                            backgroundColor: isActive('/even-management') ? '#495057' : 'inherit', // Darker shade for active
+                            '&:hover': { backgroundColor: isActive('/login') ? '#495057' : '#3c4045' } // Hover effect
+                        }}
+                    >
+                        Profile
+                    </Button>
                 </Box>
             </Toolbar>
         </AppBar>
