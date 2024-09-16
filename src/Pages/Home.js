@@ -77,9 +77,35 @@ const Home = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 3, mb: 5 }}>
       <HeroSection>
-        <Typography variant="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Welcome to Volunteezy
-        </Typography>
+      <Box sx={{ display: 'inline-flex', alignItems: 'center' }}> 
+    {/* "Welcome to" Text */}
+    <Typography 
+        variant="h2" 
+        gutterBottom 
+        sx={{ 
+            fontWeight: 'bold',
+            marginRight: '10px', // Add spacing between the texts
+        }}
+    >
+        Welcome to
+    </Typography>
+
+    {/* "Volunteezy" Text */}
+    <Typography
+        variant="h2" // Use the same variant to keep consistent sizing
+        sx={{ 
+            color: '#fff',
+            fontFamily: '"Pacifico", cursive', // Apply the cursive font
+            fontWeight: 400, // Adjust the font weight
+            marginBottom: '20px',
+            fontSize: '3rem', // Adjust the font size for a balanced look
+            marginLeft: '10px', // Add some space between "Welcome to" and "Volunteezy"
+        }}
+    >
+        Volunteezy
+    </Typography>
+</Box>
+
         <Typography variant="h5" paragraph>
           Empowering communities through seamless volunteer management.
         </Typography>
