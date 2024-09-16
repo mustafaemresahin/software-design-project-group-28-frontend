@@ -3,6 +3,9 @@ import { AppBar, Toolbar, Typography, Button, Box, IconButton, Drawer, List, Lis
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 
+// Custom logo path
+const logoPath = process.env.PUBLIC_URL + '/volunteezy-logo.png';
+
 const Navbar = ({ isLoggedIn }) => {
     const location = useLocation(); // Get the current location
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -16,8 +19,8 @@ const Navbar = ({ isLoggedIn }) => {
         setMobileOpen(!mobileOpen);
     };
 
-     // Handle navigation
-     const handleNavigation = (path) => {
+    // Handle navigation
+    const handleNavigation = (path) => {
         navigate(path);
         handleDrawerToggle();
     };
@@ -31,10 +34,10 @@ const Navbar = ({ isLoggedIn }) => {
                 sx={{
                     backgroundColor: isActive('/') ? '#7FA1C3' : 'inherit',
                     '&:hover': { backgroundColor: '#7FA1C3' },
-                    margin: '0 5px', // Reduced margin for closer spacing
-                    color: '#fff', // Set the text color to white
-                    textDecoration: 'none', // Remove underline
-                    fontWeight: isActive('/') ? 'bold' : 'normal' // Highlight the selected tab
+                    margin: '0 5px',
+                    color: '#fff',
+                    textDecoration: 'none',
+                    fontWeight: isActive('/') ? 'bold' : 'normal'
                 }}
             >
                 Home
@@ -45,10 +48,10 @@ const Navbar = ({ isLoggedIn }) => {
                 sx={{
                     backgroundColor: isActive('/event-management') ? '#7FA1C3' : 'inherit',
                     '&:hover': { backgroundColor: '#7FA1C3' },
-                    margin: '0 5px', // Reduced margin for closer spacing
-                    color: '#fff', // Set the text color to white
-                    textDecoration: 'none', // Remove underline
-                    fontWeight: isActive('/event-management') ? 'bold' : 'normal' // Highlight the selected tab
+                    margin: '0 5px',
+                    color: '#fff',
+                    textDecoration: 'none',
+                    fontWeight: isActive('/event-management') ? 'bold' : 'normal'
                 }}
             >
                 Event Management
@@ -59,10 +62,10 @@ const Navbar = ({ isLoggedIn }) => {
                 sx={{
                     backgroundColor: isActive('/volunteer-matching') ? '#7FA1C3' : 'inherit',
                     '&:hover': { backgroundColor: '#7FA1C3' },
-                    margin: '0 5px', // Reduced margin for closer spacing
-                    color: '#fff', // Set the text color to white
-                    textDecoration: 'none', // Remove underline
-                    fontWeight: isActive('/volunteer-matching') ? 'bold' : 'normal' // Highlight the selected tab
+                    margin: '0 5px',
+                    color: '#fff',
+                    textDecoration: 'none',
+                    fontWeight: isActive('/volunteer-matching') ? 'bold' : 'normal'
                 }}
             >
                 Volunteer Matching
@@ -80,10 +83,10 @@ const Navbar = ({ isLoggedIn }) => {
                     sx={{
                         backgroundColor: isActive('/login') ? '#7FA1C3' : 'inherit',
                         '&:hover': { backgroundColor: '#7FA1C3' },
-                        margin: '0 5px', // Reduced margin for closer spacing
-                        color: '#fff', // Set the text color to white
-                        textDecoration: 'none', // Remove underline
-                        fontWeight: isActive('/login') ? 'bold' : 'normal' // Highlight the selected tab
+                        margin: '0 5px',
+                        color: '#fff',
+                        textDecoration: 'none',
+                        fontWeight: isActive('/login') ? 'bold' : 'normal'
                     }}
                 >
                     Login
@@ -95,10 +98,10 @@ const Navbar = ({ isLoggedIn }) => {
                     sx={{
                         backgroundColor: isActive('/profile') ? '#7FA1C3' : 'inherit',
                         '&:hover': { backgroundColor: '#7FA1C3' },
-                        margin: '0 5px', // Reduced margin for closer spacing
-                        color: '#fff', // Set the text color to white
-                        textDecoration: 'none', // Remove underline
-                        fontWeight: isActive('/profile') ? 'bold' : 'normal' // Highlight the selected tab
+                        margin: '0 5px',
+                        color: '#fff',
+                        textDecoration: 'none',
+                        fontWeight: isActive('/profile') ? 'bold' : 'normal'
                     }}
                 >
                     Profile
@@ -110,10 +113,10 @@ const Navbar = ({ isLoggedIn }) => {
                 sx={{
                     backgroundColor: isActive('/notification') ? '#7FA1C3' : 'inherit',
                     '&:hover': { backgroundColor: '#7FA1C3' },
-                    margin: '0 5px', // Reduced margin for closer spacing
-                    color: '#fff', // Set the text color to white
-                    textDecoration: 'none', // Remove underline
-                    fontWeight: isActive('/notification') ? 'bold' : 'normal' // Highlight the selected tab
+                    margin: '0 5px',
+                    color: '#fff',
+                    textDecoration: 'none',
+                    fontWeight: isActive('/notification') ? 'bold' : 'normal'
                 }}
             >
                 Notifications
@@ -136,21 +139,36 @@ const Navbar = ({ isLoggedIn }) => {
                         </IconButton>
                     </Box>
 
-                    {/* Title */}
-                    <Typography
-                        variant="h6"
-                        component={Link} // Make the title clickable
+                    {/* Logo and Title */}
+                    <Box 
+                        component={Link} // Make the entire box clickable
                         to="/" // Navigate to home
                         sx={{ 
-                            textDecoration: 'none', // Remove underline from link
-                            color: '#fff', // Force the text color to white
                             display: 'flex', 
                             alignItems: 'center', 
-                            flexGrow: { xs: 1, md: 0 }, // Centered on mobile, left on desktop
+                            textDecoration: 'none', // Remove underline from link
                         }}
                     >
-                        Volunteezy
-                    </Typography>
+                        {/* Logo */}
+                        <img 
+                            src={logoPath} 
+                            alt="Volunteezy Logo"
+                            style={{ width: '40px', height: '40px', marginRight: '10px', cursor: 'pointer' }} // Adjust logo size
+                        />
+                        {/* Title */}
+                        <Typography
+                            variant="h6"
+                            sx={{ 
+                                color: '#fff',
+                                fontFamily: '"Pacifico", cursive', // Apply the cursive font
+                                fontWeight: 400, // Adjust the font weight
+                                fontSize: '1.5rem', // Adjust font size
+                                cursor: 'pointer', // Change cursor to pointer for better UX
+                            }}
+                        >
+                            Volunteezy
+                        </Typography>
+                    </Box>
 
                     {/* Menu items on the left */}
                     <Box sx={{ flexGrow: 1, marginLeft: '25px', display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-start' }}>
