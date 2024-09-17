@@ -10,24 +10,34 @@ const Notification = () => {
         { id: 4, message: "You have been assigned to Event D", date: "Thursday, September 17, 2024"}
     ]);
 
+    const [checked, setChecked] = useState(true);
+
     return (
-        <Box sx={{ padding: '35px' }}>
-            <Paper elevation={3} sx={{ padding: '10px', maxWidth: '900px', margin: '0 auto', backgroundColor: '#f5f5f5' }}>
-                <Typography variant="h4" sx={{ marginTop: '10px', marginBottom: '5px', textAlign: 'center', fontWeight: 'bold', color: '#6482AD' }}>
-                    Notifications
-                </Typography>
-                <List>
-                    {notifications.map((notification) => (
-                        <ListItem key={notification.id} sx={{ borderBottom: '1px solid #ccc' }}>
-                            <ListItemText 
-                                primary={notification.message} 
-                                secondary={notification.date} 
-                                primaryTypographyProps={{ fontWeight: 'bold' }}
-                            />
-                        </ListItem>
-                    ))}
-                </List>
-            </Paper>
+        <Box sx={{ padding: '40px' }}>
+            <Fade in={checked} timeout={600}>
+                <Box>
+                    <Paper elevation={3} sx={{ padding: '50px', marginBottom: '15px', backgroundColor: '#f5f5f5', maxWidth: '800px', margin: '0 auto' }}>
+                        <Typography variant="h4" sx={{ marginTop: '8px', marginBottom: '22px', textAlign: 'center', fontWeight: 'bold', color: '#6482AD' }}>
+                            Notifications
+                        </Typography>
+                        <List>
+                            {notifications.map((notification) => (
+                                <Fade key={notification.id} in={checked} timeout={600}>
+                                    <Paper elevation={2} sx={{ padding: '10px', marginBottom: '15px', backgroundColor: '#f5f5f5' }}>
+                                        <ListItem>
+                                            <ListItemText 
+                                                primary={notification.message} 
+                                                secondary={notification.date} 
+                                                primaryTypographyProps={{ fontWeight: 'bold' }}
+                                            />
+                                        </ListItem>
+                                    </Paper>
+                                </Fade>
+                            ))}
+                        </List>
+                    </Paper>
+                </Box>
+            </Fade>
         </Box>
     );
 };

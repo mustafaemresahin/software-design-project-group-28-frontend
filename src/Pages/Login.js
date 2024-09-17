@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Fade } from '@mui/material';
+
 
 const logoPath = '/volunteezy-logo.png'; // Replace with the actual path to your logo image
 
@@ -84,8 +86,11 @@ const Login = () => {
         },
     };
 
+    const [checked, setChecked] = useState(true);
+
     return (
         <div style={styles.container}>
+            <Fade in={checked} timeout={600}>
             <div style={styles.box}>
                 <img 
                     src={logoPath} 
@@ -129,6 +134,7 @@ const Login = () => {
                     Don't have an account? <Link to="/signup" style={styles.link} onMouseEnter={e => e.target.style.textDecoration = 'underline'} onMouseLeave={e => e.target.style.textDecoration = 'none'}>Sign up</Link>
                 </p>
             </div>
+            </Fade>
         </div>
     );
 };
