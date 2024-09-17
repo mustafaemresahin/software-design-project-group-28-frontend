@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Typography, Button, Box, Card, Grid, Fade } from '@mui/material';
 import { styled, keyframes } from '@mui/system';
 
+// Loading animation for "Volunteezy"
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -26,7 +27,7 @@ const HeroSection = styled(Box)({
 });
 
 const StyledButton = styled(Button)(({ theme }) => ({
-  backgroundColor: '#7FA1C3', // Secondary color from the palette
+  backgroundColor: '#7FA1C3',
   color: '#ffffff',
   '&:hover': {
     backgroundColor: '#E2DAD6',
@@ -57,8 +58,28 @@ const FeatureCard = styled(Card)({
   cursor: 'pointer',
 });
 
+const LoadingScreen = styled(Box)({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100vh',
+  backgroundColor: '#6482AD',
+  color: '#ffffff',
+  animation: `${fadeIn} 1.5s ease-out`,
+});
+
 const Home = () => {
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Set a delay before showing the homepage content
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000); // 2-second delay for the loading screen
+
+    return () => clearTimeout(timer); // Clear the timer on component unmount
+  }, []);
 
   const navigateToLogin = () => {
     navigate('/login');
@@ -74,37 +95,49 @@ const Home = () => {
     { title: 'Real-Time Notifications', path: '/notification', description: 'Keep everyone informed with real-time notifications for event updates and volunteer assignments.' },
   ];
 
+  if (loading) {
+    // Render the loading screen
+    return (
+      <LoadingScreen>
+        <Typography
+          variant="h2"
+          sx={{
+            fontFamily: '"Pacifico", cursive',
+            fontSize: '4rem',
+          }}
+        >
+          Volunteezy
+        </Typography>
+      </LoadingScreen>
+    );
+  }
+
+  // Render the homepage content after the loading screen disappears
   return (
     <Container maxWidth="lg" sx={{ mt: 3, mb: 5 }}>
       <HeroSection>
-      <Box sx={{ display: 'inline-flex', alignItems: 'center' }}> 
-    {/* "Welcome to" Text */}
-    <Typography 
-        variant="h2" 
-        gutterBottom 
-        sx={{ 
-            fontWeight: 'bold',
-            marginRight: '10px', // Add spacing between the texts
-        }}
-    >
-        Welcome to
-    </Typography>
-
-    {/* "Volunteezy" Text */}
-    <Typography
-        variant="h2" // Use the same variant to keep consistent sizing
-        sx={{ 
-            color: '#fff',
-            fontFamily: '"Pacifico", cursive', // Apply the cursive font
-            fontWeight: 400, // Adjust the font weight
-            marginBottom: '20px',
-            fontSize: '3rem', // Adjust the font size for a balanced look
-            marginLeft: '10px', // Add some space between "Welcome to" and "Volunteezy"
-        }}
-    >
-        Volunteezy
-    </Typography>
-</Box>
+        <Box sx={{ display: 'inline-flex', alignItems: 'center' }}> 
+          <Typography 
+            variant="h2" 
+            gutterBottom 
+            sx={{ fontWeight: 'bold', marginRight: '10px' }}
+          >
+            Welcome to
+          </Typography>
+          <Typography
+            variant="h2"
+            sx={{ 
+              color: '#fff',
+              fontFamily: '"Pacifico", cursive',
+              fontWeight: 400,
+              marginBottom: '20px',
+              fontSize: '3rem',
+              marginLeft: '10px',
+            }}
+          >
+            Volunteezy
+          </Typography>
+        </Box>
 
         <Typography variant="h5" paragraph>
           Empowering communities through seamless volunteer management.
@@ -115,26 +148,26 @@ const Home = () => {
       </HeroSection>
 
       <Grid container spacing={4} sx={{ mt: -2 }}>
-  {features.map((feature, index) => (
-    <Grid item xs={12} md={4} key={index}>
-      <Fade in timeout={500 + index * 500}>
-        <FeatureCard onClick={() => handleCardClick(feature.path)}>
-          <Typography
-            variant="h5"
-            className="feature-title"
-            gutterBottom
-            sx={{ color: '#6482AD', fontWeight: 'bold', transition: 'color 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) !important' }}
-          >
-            {feature.title}
-          </Typography>
-          <Typography variant="body2">
-            {feature.description}
-          </Typography>
-        </FeatureCard>
-      </Fade>
-    </Grid>
-  ))}
-</Grid>
+        {features.map((feature, index) => (
+          <Grid item xs={12} md={4} key={index}>
+            <Fade in timeout={500 + index * 500}>
+              <FeatureCard onClick={() => handleCardClick(feature.path)}>
+                <Typography
+                  variant="h5"
+                  className="feature-title"
+                  gutterBottom
+                  sx={{ color: '#6482AD', fontWeight: 'bold', transition: 'color 0.8s' }}
+                >
+                  {feature.title}
+                </Typography>
+                <Typography variant="body2">
+                  {feature.description}
+                </Typography>
+              </FeatureCard>
+            </Fade>
+          </Grid>
+        ))}
+      </Grid>
     </Container>
   );
 };
