@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Typography, Box, Paper, List, ListItem, ListItemText, Fade } from '@mui/material';
+import { Typography, Box, Paper, List, ListItem, ListItemText } from '@mui/material';
 
 const Notification = () => {
     // Simulated notifications data
