@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { TextField, MenuItem, FormControl, InputLabel, Select, Checkbox, FormControlLabel, TextareaAutosize, Button, Box, Paper, Typography, Fade } from '@mui/material';
-import { DatePicker } from '@mui/lab';
+import { TextField, MenuItem, FormControl, InputLabel, Select, Checkbox, TextareaAutosize, Button, Box, Paper, Typography, Fade } from '@mui/material';
+
 
 
 
@@ -38,9 +38,6 @@ const Profile = () => {
         setProfile({ ...profile, skills: event.target.value });
     };
     
-    const handleAvailabilityChange = (newDate) => {
-        setProfile({ ...profile, availability: [...profile.availability, newDate] });
-    };
     
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -48,7 +45,7 @@ const Profile = () => {
         // Submit form or handle form validation here
     };
 
-    const [checked, setChecked] = useState(true);
+    const [checked] = useState(true);
     
     return (
         <Box sx={{ padding: '35px' }}>

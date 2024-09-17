@@ -10,7 +10,7 @@ const Notification = () => {
         { id: 4, message: "You have been assigned to Event D", date: "Thursday, September 17, 2024"}
     ]);
 
-    const [checked, setChecked] = useState(true);
+    const [checked] = useState(true);
 
     return (
         <Box sx={{ padding: '40px' }}>

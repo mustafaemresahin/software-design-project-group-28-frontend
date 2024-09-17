@@ -86,7 +86,7 @@ const Login = () => {
         },
     };
 
-    const [checked, setChecked] = useState(true);
+    const [checked] = useState(true);
 
     return (
         <div style={styles.container}>

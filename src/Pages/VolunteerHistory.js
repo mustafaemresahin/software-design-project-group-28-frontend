@@ -225,7 +225,7 @@ const VolunteerHistory = () => {
     filters.urgency[entry.urgency] && filters.status[entry.participationStatus]
   );
 
-  const [checked, setChecked] = useState(true);
+  const [checked] = useState(true);
 
   return (
     <Fade in={checked} timeout={600}>
