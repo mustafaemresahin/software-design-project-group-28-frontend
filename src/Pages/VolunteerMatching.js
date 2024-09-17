@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Button, Typography, Box, FormControl, InputLabel, Select, MenuItem, Card, CardContent, Grid, Paper, Collapse, Fade } from '@mui/material';
+import { Container, Button, Typography, Box, FormControl, InputLabel, Select, MenuItem, Card, CardContent, Grid, Paper, Collapse, Fade, Alert } from '@mui/material';
 import { styled } from '@mui/system';
 
 // Custom Styled Components
@@ -29,6 +29,7 @@ const VolunteerMatchingForm = () => {
   const [volunteerName, setVolunteerName] = useState('');
   const [matchedEvent, setMatchedEvent] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [errors, setErrors] = useState({ volunteerName: false, matchedEvent: false });
 
   // Mock data for volunteers and events
   const volunteerOptions = ['John Doe', 'Jane Smith', 'Bob Johnson'];
@@ -37,8 +38,13 @@ const VolunteerMatchingForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Simulate matching process
-    if (volunteerName && matchedEvent) {
+    // Validation check
+    let formErrors = {};
+    if (!volunteerName) formErrors.volunteerName = true;
+    if (!matchedEvent) formErrors.matchedEvent = true;
+
+    if (Object.keys(formErrors).length === 0) {
+      // Simulate matching process if no errors
       setFormSubmitted(true);
 
       const matchingData = {
@@ -52,6 +58,8 @@ const VolunteerMatchingForm = () => {
       setMatchedEvent('');
 
       setTimeout(() => setFormSubmitted(false), 3000);
+    } else {
+      setErrors(formErrors);
     }
   };
 
@@ -66,11 +74,14 @@ const VolunteerMatchingForm = () => {
             <Box component="form" onSubmit={handleSubmit} noValidate>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <FormControl fullWidth variant="outlined" sx={{ backgroundColor: '#F5EDED' }}>
+                  <FormControl fullWidth variant="outlined" sx={{ backgroundColor: '#F5EDED' }} error={errors.volunteerName}>
                     <InputLabel>Volunteer Name</InputLabel>
                     <Select
                       value={volunteerName}
-                      onChange={(e) => setVolunteerName(e.target.value)}
+                      onChange={(e) => {
+                        setVolunteerName(e.target.value);
+                        setErrors((prevErrors) => ({ ...prevErrors, volunteerName: false }));
+                      }}
                       label="Volunteer Name"
                     >
                       {volunteerOptions.map((name, index) => (
@@ -80,13 +91,19 @@ const VolunteerMatchingForm = () => {
                       ))}
                     </Select>
                   </FormControl>
+                  {errors.volunteerName && (
+                    <Alert severity="error" sx={{ mt: 1 }}>Please select a volunteer name.</Alert>
+                  )}
                 </Grid>
                 <Grid item xs={12}>
-                  <FormControl fullWidth variant="outlined" sx={{ backgroundColor: '#F5EDED' }}>
+                  <FormControl fullWidth variant="outlined" sx={{ backgroundColor: '#F5EDED' }} error={errors.matchedEvent}>
                     <InputLabel>Matched Event</InputLabel>
                     <Select
                       value={matchedEvent}
-                      onChange={(e) => setMatchedEvent(e.target.value)}
+                      onChange={(e) => {
+                        setMatchedEvent(e.target.value);
+                        setErrors((prevErrors) => ({ ...prevErrors, matchedEvent: false }));
+                      }}
                       label="Matched Event"
                     >
                       {eventOptions.map((event, index) => (
@@ -96,6 +113,9 @@ const VolunteerMatchingForm = () => {
                       ))}
                     </Select>
                   </FormControl>
+                  {errors.matchedEvent && (
+                    <Alert severity="error" sx={{ mt: 1 }}>Please select an event to match.</Alert>
+                  )}
                 </Grid>
                 <Grid item xs={12} textAlign="center">
                   <StyledButton type="submit">
@@ -105,7 +125,7 @@ const VolunteerMatchingForm = () => {
               </Grid>
             </Box>
             <Collapse in={formSubmitted}>
-              <Paper elevation={2} sx={{ mt: 4, p: 2, backgroundColor: '#7FA1C3', color: '#ffffff' }}>
+              <Paper elevation={2} sx={{ mt: 4, p: 2, backgroundColor: '#4CAF50', color: '#ffffff' }}>
                 <Typography variant="body1" align="center">
                   Volunteer matched successfully!
                 </Typography>

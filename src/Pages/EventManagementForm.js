@@ -188,7 +188,7 @@ const EventManagementForm = () => {
               </Grid>
             </Box>
             <Collapse in={formSubmitted}>
-              <Paper elevation={2} sx={{ mt: 4, p: 2, backgroundColor: '#7FA1C3', color: '#ffffff' }}>
+              <Paper elevation={2} sx={{ mt: 4, p: 2, backgroundColor: '#4CAF50', color: '#ffffff' }}>
                 <Typography variant="body1" align="center">
                   Event created successfully!
                 </Typography>

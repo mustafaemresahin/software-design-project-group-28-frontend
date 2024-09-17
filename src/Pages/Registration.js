@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import Typography from '@mui/material/Typography'; // Import Typography
+
+const logoPath = '/volunteezy-logo.png'; // Replace with the actual path to your logo image
 
 const Registration = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Add registration logic here (e.g., form validation, API call)
+        // Handle registration logic here
         console.log('Name:', name, 'Email:', email, 'Password:', password, 'Confirm Password:', confirmPassword);
     };
+
+    const handleMouseEnter = () => setIsHovered(true);
+    const handleMouseLeave = () => setIsHovered(false);
 
     const styles = {
         container: {
@@ -18,7 +26,6 @@ const Registration = () => {
             justifyContent: 'center',
             alignItems: 'center',
             height: '100vh',
-            backgroundColor: '#f0f2f5',
         },
         box: {
             backgroundColor: '#fff',
@@ -29,10 +36,22 @@ const Registration = () => {
             maxWidth: '400px',
             textAlign: 'center',
         },
-        title: {
-            fontSize: '2rem',
+        titleContainer: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
             marginBottom: '20px',
-            color: '#333',
+        },
+        logo: {
+            width: '60px',
+            height: '60px',
+            marginBottom: '10px', // Space between logo and title
+        },
+        title: {
+            fontSize: '1.5rem', // Adjusted font size
+            color: '#6482AD',
+            fontFamily: 'Arial, sans-serif', // Apply the cursive font
+            fontWeight: 400,
         },
         inputGroup: {
             marginBottom: '20px',
@@ -58,14 +77,11 @@ const Registration = () => {
             padding: '12px',
             fontSize: '1rem',
             color: '#fff',
-            backgroundColor: '#28a745',
+            backgroundColor: isHovered ? 'rgb(127, 161, 195)' : 'rgb(100, 130, 173)',
             border: 'none',
             borderRadius: '4px',
             cursor: 'pointer',
             transition: 'background-color 0.3s ease',
-        },
-        buttonHover: {
-            backgroundColor: '#218838',
         },
         link: {
             marginTop: '20px',
@@ -81,7 +97,19 @@ const Registration = () => {
     return (
         <div style={styles.container}>
             <div style={styles.box}>
-                <h1 style={styles.title}>Create an Account</h1>
+                <div style={styles.titleContainer}>
+                    <img 
+                        src={logoPath} 
+                        alt="Volunteezy Logo"
+                        style={styles.logo} // Apply logo styles
+                    />
+                    <Typography
+                        variant="h2"
+                        sx={styles.title} // Apply title styles
+                    >
+                        Create Your Account
+                    </Typography>
+                </div>
                 <form onSubmit={handleSubmit}>
                     <div style={styles.inputGroup}>
                         <label style={styles.label} htmlFor="name">Name</label>
@@ -127,10 +155,17 @@ const Registration = () => {
                             style={styles.input}
                         />
                     </div>
-                    <button type="submit" style={styles.button}>Register</button>
+                    <button
+                        type="submit"
+                        style={styles.button}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                    >
+                        Register
+                    </button>
                 </form>
                 <p>
-                    Already have an account? <a href="/login" style={styles.link}>Login here</a>
+                    Already have an account? <Link to="/login" style={styles.link} onMouseEnter={e => e.target.style.textDecoration = 'underline'} onMouseLeave={e => e.target.style.textDecoration = 'none'}>Login</Link>
                 </p>
             </div>
         </div>

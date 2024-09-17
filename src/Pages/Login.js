@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+const logoPath = '/volunteezy-logo.png'; // Replace with the actual path to your logo image
+
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -11,13 +14,15 @@ const Login = () => {
         console.log('Email:', email, 'Password:', password);
     };
 
+    const handleMouseEnter = () => setIsHovered(true);
+    const handleMouseLeave = () => setIsHovered(false);
+
     const styles = {
         container: {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             height: '100vh',
-            backgroundColor: '#f0f2f5',
         },
         box: {
             backgroundColor: '#fff',
@@ -28,10 +33,15 @@ const Login = () => {
             maxWidth: '400px',
             textAlign: 'center',
         },
+        logo: {
+            width: '80px', // Adjust logo size
+            height: '80px',
+            marginBottom: '20px', // Space between logo and title
+        },
         title: {
             fontSize: '2rem',
             marginBottom: '20px',
-            color: '#333',
+            color: '#6482AD',
         },
         inputGroup: {
             marginBottom: '20px',
@@ -52,22 +62,16 @@ const Login = () => {
             outline: 'none',
             transition: 'border-color 0.3s ease',
         },
-        inputFocus: {
-            borderColor: '#007bff',
-        },
         button: {
             width: '100%',
             padding: '12px',
             fontSize: '1rem',
             color: '#fff',
-            backgroundColor: '#007bff',
+            backgroundColor: isHovered ? 'rgb(127, 161, 195)' : 'rgb(100, 130, 173)',
             border: 'none',
             borderRadius: '4px',
             cursor: 'pointer',
             transition: 'background-color 0.3s ease',
-        },
-        buttonHover: {
-            backgroundColor: '#0056b3',
         },
         link: {
             marginTop: '20px',
@@ -83,6 +87,11 @@ const Login = () => {
     return (
         <div style={styles.container}>
             <div style={styles.box}>
+                <img 
+                    src={logoPath} 
+                    alt="Volunteezy Logo"
+                    style={styles.logo} // Apply logo styles
+                />
                 <h1 style={styles.title}>Welcome Back!</h1>
                 <form onSubmit={handleSubmit}>
                     <div style={styles.inputGroup}>
@@ -110,12 +119,14 @@ const Login = () => {
                     <button
                         type="submit"
                         style={styles.button}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
                     >
                         Login
                     </button>
                 </form>
                 <p>
-                    Don't have an account? <Link to="/signup" style={styles.link}>Sign up</Link>
+                    Don't have an account? <Link to="/signup" style={styles.link} onMouseEnter={e => e.target.style.textDecoration = 'underline'} onMouseLeave={e => e.target.style.textDecoration = 'none'}>Sign up</Link>
                 </p>
             </div>
         </div>
