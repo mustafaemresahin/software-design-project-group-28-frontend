@@ -15,6 +15,7 @@ import {
   Box,
   Collapse,
   Button,
+  Fade
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
@@ -224,7 +225,10 @@ const VolunteerHistory = () => {
     filters.urgency[entry.urgency] && filters.status[entry.participationStatus]
   );
 
+  const [checked, setChecked] = useState(true);
+
   return (
+    <Fade in={checked} timeout={600}>
     <StyledContainer>
       {/* Sidebar Toggle Button */}
       <SidebarToggle>
@@ -345,6 +349,7 @@ const VolunteerHistory = () => {
         </StyledPaper>
       </Box>
     </StyledContainer>
+    </Fade>
   );
 };
 

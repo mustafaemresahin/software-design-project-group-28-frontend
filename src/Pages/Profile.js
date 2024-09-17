@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { TextField, MenuItem, FormControl, InputLabel, Select, Checkbox, FormControlLabel, TextareaAutosize, Button, Box, Paper, Typography } from '@mui/material';
+import { TextField, MenuItem, FormControl, InputLabel, Select, Checkbox, FormControlLabel, TextareaAutosize, Button, Box, Paper, Typography, Fade } from '@mui/material';
 import { DatePicker } from '@mui/lab';
+
 
 
 
@@ -46,9 +47,12 @@ const Profile = () => {
         console.log(profile);
         // Submit form or handle form validation here
     };
+
+    const [checked, setChecked] = useState(true);
     
     return (
         <Box sx={{ padding: '35px' }}>
+            <Fade in={checked} timeout={600}>
             <Paper elevation={3} sx={{ padding: '10px', maxWidth: '900px', margin: '0 auto', backgroundColor: '#f5f5f5' }}>
                 <Typography variant="h4" sx={{ marginTop: '10px', marginBottom: '5px', textAlign: 'center', fontWeight: 'bold', color: '#6482AD' }}>
                     User Profile
@@ -165,6 +169,7 @@ const Profile = () => {
                 </Button>
                 </form>
             </Paper>
+            </Fade>
         </Box>
     );
     

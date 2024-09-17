@@ -10,8 +10,11 @@ const Notification = () => {
         { id: 4, message: "You have been assigned to Event D", date: "Thursday, September 17, 2024"}
     ]);
 
+    const [checked, setChecked] = useState(true);
+
     return (
         <Box sx={{ padding: '35px' }}>
+            <Fade in={checked} timeout={600}>
             <Paper elevation={3} sx={{ padding: '10px', maxWidth: '900px', margin: '0 auto', backgroundColor: '#f5f5f5' }}>
                 <Typography variant="h4" sx={{ marginTop: '10px', marginBottom: '5px', textAlign: 'center', fontWeight: 'bold', color: '#6482AD' }}>
                     Notifications
@@ -28,6 +31,7 @@ const Notification = () => {
                     ))}
                 </List>
             </Paper>
+            </Fade>
         </Box>
     );
 };
