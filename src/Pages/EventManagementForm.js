@@ -4,7 +4,7 @@ import { styled } from '@mui/system';
 
 // Custom Styled Components
 const StyledCard = styled(Card)({
-  background: '#F5EDED', // White background for contrast
+  background: '#f5f5f5', // White background for contrast
   boxShadow: '0px 4px 20px rgba(0,0,0,0.1)',
   borderRadius: '5px', // Less rounded corners
   padding: '20px',
