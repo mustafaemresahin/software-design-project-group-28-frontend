@@ -70,6 +70,21 @@ const Navbar = ({ isLoggedIn }) => {
             >
                 Volunteer Matching
             </Button>
+            <Button
+                component={Link}
+                to="/volunteer-history"
+                sx={{
+                    backgroundColor: isActive('/volunteer-history') ? '#7FA1C3' : 'inherit',
+                    '&:hover': { backgroundColor: '#7FA1C3' },
+                    margin: '0 5px',
+                    color: '#fff',
+                    textDecoration: 'none',
+                    fontWeight: isActive('/volunteer-history') ? 'bold' : 'normal'
+                }}
+            >
+                Volunteer History
+            </Button>
+
         </>
     );
 
@@ -135,6 +150,7 @@ const Navbar = ({ isLoggedIn }) => {
             >
                 Notifications
             </Button>
+
         </>
     );
 
@@ -226,6 +242,9 @@ const Navbar = ({ isLoggedIn }) => {
                     )}
                     <ListItem button onClick={() => handleNavigation('/notification')}>
                         <ListItemText primary="Notifications" sx={{ color: '#E2DAD6' }} />
+                    </ListItem>
+                    <ListItem button onClick={() => handleNavigation('/volunteer-history')}>
+                        <ListItemText primary="Volunteer History" sx={{ color: '#E2DAD6' }} />
                     </ListItem>
                 </List>
             </Drawer>

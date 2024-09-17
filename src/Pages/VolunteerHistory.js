@@ -1,101 +1,351 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import {
+  Container,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Box,
+  Collapse,
+  Button,
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import CheckIcon from '@mui/icons-material/Check';
+import CancelIcon from '@mui/icons-material/Cancel';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
-const styles = {
-  container: {
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif',
+// Custom Styled Components
+const StyledContainer = styled(Container)({
+  marginTop: '20px',
+  marginBottom: '20px',
+  display: 'flex',
+  position: 'relative',
+});
+
+const SidebarToggle = styled(Box)({
+  position: 'fixed',
+  top: '100px',
+  left: '20px',
+  zIndex: 1000,
+});
+
+const StyledPaper = styled(Paper)({
+  backgroundColor: '#F5EDED',
+  boxShadow: '0px 4px 15px rgba(0,0,0,0.1)',
+  borderRadius: '15px',
+  padding: '20px',
+  maxWidth: '900px',
+  margin: 'auto',
+});
+
+const StyledTable = styled(Table)({
+  minWidth: 650,
+  borderCollapse: 'separate',
+  borderSpacing: '0 8px',
+  borderRadius: '12px',
+  overflow: 'hidden',
+});
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  backgroundColor: '#FFFFFF',
+  boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.05)',
+  '&:nth-of-type(even)': {
+    backgroundColor: '#FAFAFA',
   },
-  heading: {
-    fontSize: '2em',
-    color: '#000000', // Updated heading color to black
+  '&:hover': {
+    backgroundColor: '#F0F4F8',
+    transform: 'scale(1.01)',
+    transition: 'all 0.3s ease-in-out',
   },
-  paragraph: {
-    fontSize: '1.1em',
-    color: '#000000', // Paragraph color remains the same
-    marginBottom: '20px',
-  },
-  tableContainer: {
-    overflowX: 'auto',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-  },
-  th: {
-    border: '1px solid #E2DAD6', // Updated border color
-    padding: '12px',
-    textAlign: 'left',
-    backgroundColor: '#6482AD', // Updated header background color
-    color: '#F5EDED', // Updated header text color
-  },
-  td: {
-    border: '1px solid #E2DAD6', // Updated border color
-    padding: '12px',
-    textAlign: 'left',
-  },
-  trEven: {
-    backgroundColor: '#F5EDED', // Updated row background color
-  },
-  trHover: {
-    backgroundColor: '#E2DAD6', // Updated hover background color
-  },
+}));
+
+const StyledTableCell = styled(TableCell)({
+  padding: '12px 16px',
+  textAlign: 'center',
+  verticalAlign: 'middle',
+  borderBottom: 'none',
+  fontSize: '14px',
+  width: '150px',
+});
+
+const StyledTableHeaderCell = styled(TableCell)({
+  border: '1px solid #7FA1C3',
+  padding: '15px',
+  backgroundColor: '#6482AD',
+  color: '#F5EDED',
+  fontWeight: 'bold',
+  fontSize: '16px',
+  width: '150px',
+});
+
+const StyledUrgencyCell = styled(TableCell)(({ urgency }) => ({
+  color: urgencyColor(urgency),
+  fontWeight: 'bold',
+  fontSize: '14px',
+}));
+
+const statusIcon = (status) => {
+  switch (status) {
+    case 'Attended':
+      return <CheckIcon style={{ color: 'green' }} />;
+    case 'Missed':
+      return <CancelIcon style={{ color: 'red' }} />;
+    default:
+      return null;
+  }
 };
 
-function formatDate(dateStr) {
+const urgencyColor = (urgency) => {
+  switch (urgency) {
+    case 'High':
+      return 'red';
+    case 'Medium':
+      return 'orange';
+    case 'Low':
+      return 'green';
+    default:
+      return 'gray';
+  }
+};
+
+const formatDate = (dateStr) => {
   const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
   return new Date(dateStr).toLocaleDateString(undefined, options);
-}
+};
 
-function VolunteerHistory() {
-  // Sample data
-  const [volunteerHistory, setVolunteerHistory] = useState([
-    { date: '2024-08-01', event: 'Food Drive', hours: 4 },
-    { date: '2024-08-15', event: 'Community Cleanup', hours: 3 },
-    { date: '2024-09-01', event: 'Charity Run', hours: 5 },
-  ]);
+// Sample Data
+const sampleData = [
+  {
+    eventName: 'Food Drive',
+    eventDescription: 'A community food drive for the homeless.',
+    location: 'Community Center',
+    requiredSkills: ['Teamwork', 'Organization'],
+    urgency: 'High',
+    eventDate: '2024-08-01',
+    participationStatus: 'Attended',
+  },
+  {
+    eventName: 'Charity Run',
+    eventDescription: 'A charity run to raise funds for cancer research.',
+    location: 'City Park',
+    requiredSkills: ['Endurance', 'Motivation'],
+    urgency: 'Medium',
+    eventDate: '2024-09-01',
+    participationStatus: 'Missed',
+  },
+  {
+    eventName: 'Beach Cleanup',
+    eventDescription: 'An initiative to clean up the local beach and preserve marine life.',
+    location: 'Sunny Beach',
+    requiredSkills: ['Physical Stamina', 'Environmental Awareness'],
+    urgency: 'High',
+    eventDate: '2024-09-15',
+    participationStatus: 'Attended',
+  },
+  {
+    eventName: 'Community Garden',
+    eventDescription: 'Planting and maintaining a community garden to promote local agriculture.',
+    location: 'Greenfield Park',
+    requiredSkills: ['Gardening', 'Teamwork'],
+    urgency: 'Low',
+    eventDate: '2024-10-05',
+    participationStatus: 'Attended',
+  },
+  {
+    eventName: 'Fundraising Gala',
+    eventDescription: 'A formal event to raise funds for local charities.',
+    location: 'Grand Hotel',
+    requiredSkills: ['Event Planning', 'Networking'],
+    urgency: 'Medium',
+    eventDate: '2024-11-01',
+    participationStatus: 'Missed',
+  },
+  {
+    eventName: 'Health Fair',
+    eventDescription: 'A fair providing free health screenings and wellness information to the community.',
+    location: 'Community Center',
+    requiredSkills: ['Healthcare Knowledge', 'Public Speaking'],
+    urgency: 'High',
+    eventDate: '2024-11-15',
+    participationStatus: 'Attended',
+  },
+  {
+    eventName: 'Winter Clothing Drive',
+    eventDescription: 'Collecting winter clothing to distribute to those in need during the colder months.',
+    location: 'Local Library',
+    requiredSkills: ['Organization', 'Communication'],
+    urgency: 'Medium',
+    eventDate: '2024-12-01',
+    participationStatus: 'Attended',
+  },
+  {
+    eventName: 'Book Fair',
+    eventDescription: 'Organizing a fair to promote literacy and distribute books to underprivileged children.',
+    location: 'City Hall',
+    requiredSkills: ['Organization', 'Literacy Promotion'],
+    urgency: 'Low',
+    eventDate: '2024-12-15',
+    participationStatus: 'Missed',
+  },
+];
+const VolunteerHistory = () => {
+  const [filters, setFilters] = useState({
+    urgency: { High: true, Medium: true, Low: true },
+    status: { Attended: true, Missed: true },
+  });
+  const [showFilters, setShowFilters] = useState(false);  // Toggle filter sidebar
+  const [expandedRow, setExpandedRow] = useState(null);  // Track which row is expanded
 
-  // You can use useEffect to fetch data from an API if needed
-  // useEffect(() => {
-  //   fetch('/api/volunteer-history')
-  //     .then(response => response.json())
-  //     .then(data => setVolunteerHistory(data))
-  //     .catch(error => console.error('Error fetching data:', error));
-  // }, []);
+  const handleFilterChange = (event) => {
+    const { name, value, checked } = event.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: {
+        ...prevFilters[name],
+        [value]: checked,
+      },
+    }));
+  };
+
+  const handleRowClick = (index) => {
+    setExpandedRow(expandedRow === index ? null : index);
+  };
+
+  const filteredData = sampleData.filter(entry =>
+    filters.urgency[entry.urgency] && filters.status[entry.participationStatus]
+  );
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.heading}>Volunteer History</h1>
-      <p style={styles.paragraph}>
-        This page displays the history of days a volunteer has worked and the events they have participated in.
-      </p>
-      <div style={styles.tableContainer}>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.th}>Date</th>
-              <th style={styles.th}>Event</th>
-              <th style={styles.th}>Hours Worked</th>
-            </tr>
-          </thead>
-          <tbody>
-            {volunteerHistory.map((entry, index) => (
-              <tr
-                key={index}
-                style={index % 2 === 0 ? styles.trEven : {}}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.trHover.backgroundColor}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}
-              >
-                <td style={styles.td}>{formatDate(entry.date)}</td>
-                <td style={styles.td}>{entry.event}</td>
-                <td style={styles.td}>{entry.hours}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <StyledContainer>
+      {/* Sidebar Toggle Button */}
+      <SidebarToggle>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<FilterAltIcon />}
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          Filters
+        </Button>
+      </SidebarToggle>
+
+      {/* Collapsible Filter Section */}
+      <Collapse in={showFilters} orientation="horizontal" sx={{ width: '250px', position: 'absolute', left: 0 }}>
+        <Box sx={{ width: '220px', marginRight: '10px' }}> {/* Smaller width for the filter box */}
+          <StyledPaper sx={{ padding: '20px' }}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
+              Filters {/* Slightly larger font for title */}
+            </Typography>
+            <FormGroup>
+              {/* Make "Urgency" stand out */}
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '1.1rem', marginTop: '10px' }}>
+                Urgency
+              </Typography>
+              {['High', 'Medium', 'Low'].map((level) => (
+                <FormControlLabel
+                  key={level}
+                  control={
+                    <Checkbox
+                      checked={filters.urgency[level]}
+                      onChange={handleFilterChange}
+                      name="urgency"
+                      value={level}
+                    />
+                  }
+                  label={level}
+                />
+              ))}
+
+              {/* Make "Participation Status" stand out */}
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '1.1rem', marginTop: '10px' }}>
+                Participation Status
+              </Typography>
+              {['Attended', 'Missed'].map((status) => (
+                <FormControlLabel
+                  key={status}
+                  control={
+                    <Checkbox
+                      checked={filters.status[status]}
+                      onChange={handleFilterChange}
+                      name="status"
+                      value={status}
+                    />
+                  }
+                  label={status}
+                />
+              ))}
+            </FormGroup>
+          </StyledPaper>
+        </Box>
+      </Collapse>
+
+      {/* Volunteer History Table */}
+      <Box sx={{ flex: 1, ml: showFilters ? '270px' : '20px' }}> {/* Adjust layout when filter box is shown */}
+        <StyledPaper>
+          <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4, color: '#6482AD', fontWeight: 'bold' }}>
+            Volunteer History
+          </Typography>
+
+          <TableContainer component={Paper}>
+            <StyledTable>
+              <TableHead>
+                <TableRow>
+                  <StyledTableHeaderCell>Event Name</StyledTableHeaderCell>
+                  <StyledTableHeaderCell>Event Date</StyledTableHeaderCell>
+                  <StyledTableHeaderCell>Urgency</StyledTableHeaderCell>
+                  <StyledTableHeaderCell>Status</StyledTableHeaderCell>
+                  <StyledTableHeaderCell>Expand</StyledTableHeaderCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredData.map((entry, index) => (
+                  <React.Fragment key={index}>
+                    <StyledTableRow onClick={() => handleRowClick(index)} style={{ cursor: 'pointer' }}>
+                      <StyledTableCell>{entry.eventName}</StyledTableCell>
+                      <StyledTableCell>{formatDate(entry.eventDate)}</StyledTableCell>
+                      <StyledUrgencyCell urgency={entry.urgency}>{entry.urgency}</StyledUrgencyCell>
+                      <StyledTableCell>{statusIcon(entry.participationStatus)}</StyledTableCell>
+                      <StyledTableCell>
+                        {expandedRow === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                      </StyledTableCell>
+                    </StyledTableRow>
+
+                    {/* Collapsible content */}
+                    <TableRow>
+                      <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                        <Collapse in={expandedRow === index} timeout="auto" unmountOnExit>
+                          <Box sx={{ margin: 1 }}>
+                            <Typography variant="subtitle1" gutterBottom>
+                              <strong>Event Description:</strong> {entry.eventDescription}
+                            </Typography>
+                            <Typography variant="subtitle1" gutterBottom>
+                              <strong>Location:</strong> {entry.location}
+                            </Typography>
+                            <Typography variant="subtitle1" gutterBottom>
+                              <strong>Required Skills:</strong> {entry.requiredSkills.join(', ')}
+                            </Typography>
+                          </Box>
+                        </Collapse>
+                      </TableCell>
+                    </TableRow>
+                  </React.Fragment>
+                ))}
+              </TableBody>
+            </StyledTable>
+          </TableContainer>
+        </StyledPaper>
+      </Box>
+    </StyledContainer>
   );
-}
+};
 
 export default VolunteerHistory;
