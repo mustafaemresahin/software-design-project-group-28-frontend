@@ -105,6 +105,20 @@ const Navbar = ({ isLoggedIn }) => {
                 </Button>
             )}
             <Button
+                    component={Link}
+                    to="/profile"
+                    sx={{
+                        backgroundColor: isActive('/profile') ? '#7FA1C3' : 'inherit',
+                        '&:hover': { backgroundColor: '#7FA1C3' },
+                        margin: '0 5px', // Reduced margin for closer spacing
+                        color: '#fff', // Set the text color to white
+                        textDecoration: 'none', // Remove underline
+                        fontWeight: isActive('/profile') ? 'bold' : 'normal' // Highlight the selected tab
+                    }}
+                >
+                    Profile
+            </Button>
+            <Button
                 component={Link}
                 to="/notification"
                 sx={{
@@ -198,71 +212,7 @@ const Navbar = ({ isLoggedIn }) => {
                 </List>
             </Drawer>
         </>
-    return (
-        <AppBar position="static" sx={{ backgroundColor: '#6482AD' }}>
-            <Toolbar>
-                <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                    Volunteezy 
-                </Typography>
-                <Box>
-                    <Button 
-                        color="inherit" 
-                        component={Link} 
-                        to="/" 
-                        sx={{
-                            backgroundColor: isActive('/') ? '#495057' : 'inherit', // Darker shade for active
-                            '&:hover': { backgroundColor: isActive('/') ? '#495057' : '#3c4045' } // Hover effect
-                        }}
-                    >
-                        Home
-                    </Button>
-                    <Button 
-                        color="inherit" 
-                        component={Link} 
-                        to="/login" 
-                        sx={{
-                            backgroundColor: isActive('/login') ? '#495057' : 'inherit', // Darker shade for active
-                            '&:hover': { backgroundColor: isActive('/login') ? '#495057' : '#3c4045' } // Hover effect
-                        }}
-                    >
-                        Login
-                    </Button>
-                    <Button 
-                        color="inherit" 
-                        component={Link} 
-                        to="/notification" 
-                        sx={{
-                            backgroundColor: isActive('/login') ? '#495057' : 'inherit', // Darker shade for active
-                            '&:hover': { backgroundColor: isActive('/login') ? '#495057' : '#3c4045' } // Hover effect
-                        }}
-                    >
-                        Notifications
-                    </Button>
-                    <Button 
-                        color="inherit" 
-                        component={Link} 
-                        to="/event-management" 
-                        sx={{
-                            backgroundColor: isActive('/even-management') ? '#495057' : 'inherit', // Darker shade for active
-                            '&:hover': { backgroundColor: isActive('/login') ? '#495057' : '#3c4045' } // Hover effect
-                        }}
-                    >
-                        Event Management
-                    </Button>
-                    <Button
-                        color="inherit" 
-                        component={Link} 
-                        to="/profile" 
-                        sx={{
-                            backgroundColor: isActive('/even-management') ? '#495057' : 'inherit', // Darker shade for active
-                            '&:hover': { backgroundColor: isActive('/login') ? '#495057' : '#3c4045' } // Hover effect
-                        }}
-                    >
-                        Profile
-                    </Button>
-                </Box>
-            </Toolbar>
-        </AppBar>
+    
     );
 };
 
