@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+const logoPath = '/volunteezy-logo.png'; // Replace with the actual path to your logo image
+
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -30,6 +32,11 @@ const Login = () => {
             width: '100%',
             maxWidth: '400px',
             textAlign: 'center',
+        },
+        logo: {
+            width: '80px', // Adjust logo size
+            height: '80px',
+            marginBottom: '20px', // Space between logo and title
         },
         title: {
             fontSize: '2rem',
@@ -80,6 +87,11 @@ const Login = () => {
     return (
         <div style={styles.container}>
             <div style={styles.box}>
+                <img 
+                    src={logoPath} 
+                    alt="Volunteezy Logo"
+                    style={styles.logo} // Apply logo styles
+                />
                 <h1 style={styles.title}>Welcome Back!</h1>
                 <form onSubmit={handleSubmit}>
                     <div style={styles.inputGroup}>

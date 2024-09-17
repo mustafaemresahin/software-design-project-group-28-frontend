@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Typography from '@mui/material/Typography'; // Import Typography
+
+const logoPath = '/volunteezy-logo.png'; // Replace with the actual path to your logo image
 
 const Registration = () => {
     const [name, setName] = useState('');
@@ -33,10 +36,22 @@ const Registration = () => {
             maxWidth: '400px',
             textAlign: 'center',
         },
-        title: {
-            fontSize: '2rem',
+        titleContainer: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
             marginBottom: '20px',
+        },
+        logo: {
+            width: '60px',
+            height: '60px',
+            marginBottom: '10px', // Space between logo and title
+        },
+        title: {
+            fontSize: '1.5rem', // Adjusted font size
             color: '#6482AD',
+            fontFamily: 'Arial, sans-serif', // Apply the cursive font
+            fontWeight: 400,
         },
         inputGroup: {
             marginBottom: '20px',
@@ -82,7 +97,19 @@ const Registration = () => {
     return (
         <div style={styles.container}>
             <div style={styles.box}>
-                <h1 style={styles.title}>Create an Account</h1>
+                <div style={styles.titleContainer}>
+                    <img 
+                        src={logoPath} 
+                        alt="Volunteezy Logo"
+                        style={styles.logo} // Apply logo styles
+                    />
+                    <Typography
+                        variant="h2"
+                        sx={styles.title} // Apply title styles
+                    >
+                        Create Your Account
+                    </Typography>
+                </div>
                 <form onSubmit={handleSubmit}>
                     <div style={styles.inputGroup}>
                         <label style={styles.label} htmlFor="name">Name</label>
