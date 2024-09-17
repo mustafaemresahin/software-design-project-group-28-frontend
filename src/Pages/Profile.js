@@ -1,18 +1,67 @@
-import React, { useState } from 'react';
-import { TextField, MenuItem, FormControl, InputLabel, Select, Checkbox, TextareaAutosize, Button, Box, Paper, Typography, Grid, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { TextField, MenuItem, FormControl, InputLabel, Select, Checkbox, Button, Box, Paper, Typography, Grid, Chip, Snackbar, Alert } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LoadScript, Autocomplete } from '@react-google-maps/api';
+import { Cancel as CancelIcon } from '@mui/icons-material';
+
+// Move libraries array outside of the component to prevent re-renders
+const libraries = ['places'];
 
 const states = [
+  { code: 'AL', name: 'Alabama' },
+  { code: 'AK', name: 'Alaska' },
+  { code: 'AZ', name: 'Arizona' },
+  { code: 'AR', name: 'Arkansas' },
   { code: 'CA', name: 'California' },
+  { code: 'CO', name: 'Colorado' },
+  { code: 'CT', name: 'Connecticut' },
+  { code: 'DE', name: 'Delaware' },
+  { code: 'FL', name: 'Florida' },
+  { code: 'GA', name: 'Georgia' },
+  { code: 'HI', name: 'Hawaii' },
+  { code: 'ID', name: 'Idaho' },
+  { code: 'IL', name: 'Illinois' },
+  { code: 'IN', name: 'Indiana' },
+  { code: 'IA', name: 'Iowa' },
+  { code: 'KS', name: 'Kansas' },
+  { code: 'KY', name: 'Kentucky' },
+  { code: 'LA', name: 'Louisiana' },
+  { code: 'ME', name: 'Maine' },
+  { code: 'MD', name: 'Maryland' },
+  { code: 'MA', name: 'Massachusetts' },
+  { code: 'MI', name: 'Michigan' },
+  { code: 'MN', name: 'Minnesota' },
+  { code: 'MS', name: 'Mississippi' },
+  { code: 'MO', name: 'Missouri' },
+  { code: 'MT', name: 'Montana' },
+  { code: 'NE', name: 'Nebraska' },
+  { code: 'NV', name: 'Nevada' },
+  { code: 'NH', name: 'New Hampshire' },
+  { code: 'NJ', name: 'New Jersey' },
+  { code: 'NM', name: 'New Mexico' },
   { code: 'NY', name: 'New York' },
-  // Add more states as needed
+  { code: 'NC', name: 'North Carolina' },
+  { code: 'ND', name: 'North Dakota' },
+  { code: 'OH', name: 'Ohio' },
+  { code: 'OK', name: 'Oklahoma' },
+  { code: 'OR', name: 'Oregon' },
+  { code: 'PA', name: 'Pennsylvania' },
+  { code: 'RI', name: 'Rhode Island' },
+  { code: 'SC', name: 'South Carolina' },
+  { code: 'SD', name: 'South Dakota' },
+  { code: 'TN', name: 'Tennessee' },
+  { code: 'TX', name: 'Texas' },
+  { code: 'UT', name: 'Utah' },
+  { code: 'VT', name: 'Vermont' },
+  { code: 'VA', name: 'Virginia' },
+  { code: 'WA', name: 'Washington' },
+  { code: 'WV', name: 'West Virginia' },
+  { code: 'WI', name: 'Wisconsin' },
+  { code: 'WY', name: 'Wyoming' }
 ];
 
-const skills = [
-  'Programming', 'Design', 'Marketing', 'Writing', 'Project Management'
-];
+const skills = ['Programming', 'Design', 'Marketing', 'Writing', 'Project Management'];
 
 const Profile = () => {
   const [profile, setProfile] = useState({
@@ -24,11 +73,22 @@ const Profile = () => {
     zip: '',
     skills: [],
     preferences: '',
-    availability: [],
+    availability: [], // Updated to handle multiple dates
   });
 
   const [autocomplete, setAutocomplete] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false); // State to control the dialog
+  const [showConfirmation, setShowConfirmation] = useState(false); // State for showing confirmation message
+
+  // Load profile data from local storage on component mount
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('userProfile');
+    if (savedProfile) {
+      const parsedProfile = JSON.parse(savedProfile);
+      // Parse date strings into Date objects
+      parsedProfile.availability = parsedProfile.availability.map(dateString => new Date(dateString));
+      setProfile(parsedProfile);
+    }
+  }, []);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -40,16 +100,31 @@ const Profile = () => {
   };
 
   const handleAvailabilityChange = (newDate) => {
-    setProfile({ ...profile, availability: [...profile.availability, newDate] });
+    if (newDate) {
+      setProfile({ ...profile, availability: [...profile.availability, newDate] });
+    }
+  };
+
+  const removeAvailabilityDate = (dateToRemove) => {
+    setProfile({ 
+      ...profile, 
+      availability: profile.availability.filter(date => date !== dateToRemove)
+    });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setOpenDialog(true); // Open the confirmation dialog
-  };
+    console.log(profile);
 
-  const handleDialogClose = () => {
-    setOpenDialog(false);
+    // Convert date objects to strings before saving
+    const profileToSave = {
+      ...profile,
+      availability: profile.availability.map(date => date.toISOString())
+    };
+    localStorage.setItem('userProfile', JSON.stringify(profileToSave));
+
+    // Display confirmation message
+    setShowConfirmation(true);
   };
 
   const onLoad = (autoC) => {
@@ -59,15 +134,21 @@ const Profile = () => {
   const onPlaceChanged = () => {
     if (autocomplete !== null) {
       const place = autocomplete.getPlace();
-      const address = place.formatted_address;
       const addressComponents = place.address_components;
+
+      // Extract and fill in the address components
+      const streetNumber = addressComponents.find(comp => comp.types.includes('street_number'))?.long_name || '';
+      const route = addressComponents.find(comp => comp.types.includes('route'))?.long_name || '';
+      const city = addressComponents.find(comp => comp.types.includes('locality'))?.long_name || '';
+      const state = addressComponents.find(comp => comp.types.includes('administrative_area_level_1'))?.short_name || '';
+      const zip = addressComponents.find(comp => comp.types.includes('postal_code'))?.long_name || '';
 
       setProfile({
         ...profile,
-        address1: address,
-        city: addressComponents.find(comp => comp.types.includes('locality'))?.long_name || '',
-        state: addressComponents.find(comp => comp.types.includes('administrative_area_level_1'))?.short_name || '',
-        zip: addressComponents.find(comp => comp.types.includes('postal_code'))?.long_name || ''
+        address1: `${streetNumber} ${route}`,
+        city: city,
+        state: state,
+        zip: zip
       });
     } else {
       console.log('Autocomplete is not loaded yet!');
@@ -99,11 +180,8 @@ const Profile = () => {
 
               {/* Address 1 with Autocomplete */}
               <Grid item xs={12}>
-                <LoadScript googleMapsApiKey="YOUR_GOOGLE_API_KEY" libraries={['places']}>
-                  <Autocomplete
-                    onLoad={onLoad}
-                    onPlaceChanged={onPlaceChanged}
-                  >
+                <LoadScript googleMapsApiKey="AIzaSyDSrG5Ng0BUoRCNJNDVRf8fPyy0f7ijeBo" libraries={libraries}>
+                  <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
                     <TextField
                       label="Address 1"
                       name="address1"
@@ -146,7 +224,7 @@ const Profile = () => {
               </Grid>
 
               {/* State */}
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={3}>
                 <FormControl fullWidth required variant="outlined">
                   <InputLabel>State</InputLabel>
                   <Select
@@ -165,7 +243,7 @@ const Profile = () => {
               </Grid>
 
               {/* Zip Code */}
-              <Grid item xs={12}>
+              <Grid item xs={12} md={3}>
                 <TextField
                   label="Zip Code"
                   name="zip"
@@ -207,24 +285,37 @@ const Profile = () => {
 
               {/* Preferences */}
               <Grid item xs={12}>
-                <TextareaAutosize
-                  placeholder="Preferences (Optional)"
+                <TextField
+                  label="Preferences (Optional)"
                   name="preferences"
                   value={profile.preferences}
                   onChange={handleInputChange}
-                  minRows={3}
-                  style={{ width: '100%', padding: '10px', borderRadius: '4px', borderColor: '#cfd8dc' }}
+                  multiline
+                  rows={4}
+                  fullWidth
+                  variant="outlined"
                 />
               </Grid>
 
               {/* Availability */}
               <Grid item xs={12}>
                 <DatePicker
-                  label="Availability"
+                  label="Add Availability"
                   value={null}
                   onChange={(newDate) => handleAvailabilityChange(newDate)}
                   renderInput={(params) => <TextField {...params} variant="outlined" fullWidth />}
                 />
+                <Box sx={{ marginTop: '10px', display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                  {profile.availability.map((date, index) => (
+                    <Chip
+                      key={index}
+                      label={date.toLocaleDateString()}
+                      onDelete={() => removeAvailabilityDate(date)}
+                      deleteIcon={<CancelIcon />}
+                      sx={{ margin: '5px' }}
+                    />
+                  ))}
+                </Box>
               </Grid>
 
               {/* Submit Button */}
@@ -235,30 +326,22 @@ const Profile = () => {
               </Grid>
             </Grid>
           </form>
-
-          {/* Confirmation Dialog */}
-          <Dialog
-            open={openDialog}
-            onClose={handleDialogClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
+        
+          {/* Confirmation Snackbar */}
+          <Snackbar 
+            open={showConfirmation} 
+            autoHideDuration={4000} 
+            onClose={() => setShowConfirmation(false)}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           >
-            <DialogTitle id="alert-dialog-title">{"Profile Saved"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Your profile has been saved successfully!
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleDialogClose} color="primary" autoFocus>
-                OK
-              </Button>
-            </DialogActions>
-          </Dialog>
+            <Alert onClose={() => setShowConfirmation(false)} severity="success" sx={{ width: '100%' }}>
+              Profile saved successfully!
+            </Alert>
+          </Snackbar>
         </Paper>
       </Box>
     </LocalizationProvider>
   );
-}
+};
 
 export default Profile;
