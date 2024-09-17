@@ -14,15 +14,12 @@ import {
   FormGroup,
   Box,
   Collapse,
-  IconButton,
   Button,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
@@ -37,7 +34,7 @@ const StyledContainer = styled(Container)({
 const SidebarToggle = styled(Box)({
   position: 'fixed',
   top: '100px',
-  left: '20px',  // Position the button on the side of the screen
+  left: '20px',
   zIndex: 1000,
 });
 
@@ -126,7 +123,6 @@ const formatDate = (dateStr) => {
 };
 
 // Sample Data
-// Sample Data
 const sampleData = [
   {
     eventName: 'Food Drive',
@@ -201,7 +197,6 @@ const sampleData = [
     participationStatus: 'Missed',
   },
 ];
-
 const VolunteerHistory = () => {
   const [filters, setFilters] = useState({
     urgency: { High: true, Medium: true, Low: true },
@@ -244,46 +239,57 @@ const VolunteerHistory = () => {
       </SidebarToggle>
 
       {/* Collapsible Filter Section */}
-      <Collapse in={showFilters} orientation="horizontal" sx={{ width: '250px', ml: 2 }}>
-        <StyledPaper sx={{ padding: '20px' }}>
-          <Typography variant="h6" gutterBottom>Filters</Typography>
-          <FormGroup>
-            <Typography variant="subtitle1">Urgency</Typography>
-            {['High', 'Medium', 'Low'].map((level) => (
-              <FormControlLabel
-                key={level}
-                control={
-                  <Checkbox
-                    checked={filters.urgency[level]}
-                    onChange={handleFilterChange}
-                    name="urgency"
-                    value={level}
-                  />
-                }
-                label={level}
-              />
-            ))}
-            <Typography variant="subtitle1">Participation Status</Typography>
-            {['Attended', 'Missed'].map((status) => (
-              <FormControlLabel
-                key={status}
-                control={
-                  <Checkbox
-                    checked={filters.status[status]}
-                    onChange={handleFilterChange}
-                    name="status"
-                    value={status}
-                  />
-                }
-                label={status}
-              />
-            ))}
-          </FormGroup>
-        </StyledPaper>
+      <Collapse in={showFilters} orientation="horizontal" sx={{ width: '250px', position: 'absolute', left: 0 }}>
+        <Box sx={{ width: '220px', marginRight: '10px' }}> {/* Smaller width for the filter box */}
+          <StyledPaper sx={{ padding: '20px' }}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
+              Filters {/* Slightly larger font for title */}
+            </Typography>
+            <FormGroup>
+              {/* Make "Urgency" stand out */}
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '1.1rem', marginTop: '10px' }}>
+                Urgency
+              </Typography>
+              {['High', 'Medium', 'Low'].map((level) => (
+                <FormControlLabel
+                  key={level}
+                  control={
+                    <Checkbox
+                      checked={filters.urgency[level]}
+                      onChange={handleFilterChange}
+                      name="urgency"
+                      value={level}
+                    />
+                  }
+                  label={level}
+                />
+              ))}
+
+              {/* Make "Participation Status" stand out */}
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '1.1rem', marginTop: '10px' }}>
+                Participation Status
+              </Typography>
+              {['Attended', 'Missed'].map((status) => (
+                <FormControlLabel
+                  key={status}
+                  control={
+                    <Checkbox
+                      checked={filters.status[status]}
+                      onChange={handleFilterChange}
+                      name="status"
+                      value={status}
+                    />
+                  }
+                  label={status}
+                />
+              ))}
+            </FormGroup>
+          </StyledPaper>
+        </Box>
       </Collapse>
 
       {/* Volunteer History Table */}
-      <Box sx={{ flex: 1, ml: showFilters ? '270px' : '20px' }}>
+      <Box sx={{ flex: 1, ml: showFilters ? '270px' : '20px' }}> {/* Adjust layout when filter box is shown */}
         <StyledPaper>
           <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4, color: '#6482AD', fontWeight: 'bold' }}>
             Volunteer History
