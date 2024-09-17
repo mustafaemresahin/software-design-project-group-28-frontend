@@ -231,15 +231,12 @@ const Navbar = ({ isLoggedIn }) => {
                     <ListItem button onClick={() => handleNavigation('/volunteer-matching')}>
                         <ListItemText primary="Volunteer Matching" sx={{ color: '#E2DAD6' }} />
                     </ListItem>
-                    {!isLoggedIn ? (
-                        <ListItem button onClick={() => handleNavigation('/login')}>
-                            <ListItemText primary="Login" sx={{ color: '#E2DAD6' }} />
-                        </ListItem>
-                    ) : (
-                        <ListItem button onClick={() => handleNavigation('/profile')}>
-                            <ListItemText primary="Profile" sx={{ color: '#E2DAD6' }} />
-                        </ListItem>
-                    )}
+                    <ListItem button onClick={() => handleNavigation('/login')}>
+                        <ListItemText primary="Login" sx={{ color: '#E2DAD6' }} />
+                    </ListItem>
+                    <ListItem button onClick={() => handleNavigation('/profile')}>
+                        <ListItemText primary="Profile" sx={{ color: '#E2DAD6' }} />
+                    </ListItem>
                     <ListItem button onClick={() => handleNavigation('/notification')}>
                         <ListItemText primary="Notifications" sx={{ color: '#E2DAD6' }} />
                     </ListItem>
