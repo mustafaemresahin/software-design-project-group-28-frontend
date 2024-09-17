@@ -4,7 +4,7 @@ import { styled } from '@mui/system';
 
 // Custom Styled Components
 const StyledCard = styled(Card)({
-  background: '#F5EDED', // Light beige background from the palette
+  background: '#f5f5f5', // Light beige background from the palette
   boxShadow: '0px 4px 20px rgba(0,0,0,0.1)',
   borderRadius: '5px', // Less rounded corners
   padding: '20px',
@@ -74,7 +74,7 @@ const VolunteerMatchingForm = () => {
             <Box component="form" onSubmit={handleSubmit} noValidate>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <FormControl fullWidth variant="outlined" sx={{ backgroundColor: '#F5EDED' }} error={errors.volunteerName}>
+                  <FormControl fullWidth variant="outlined" sx={{ backgroundColor: '#f5f5f5' }} error={errors.volunteerName}>
                     <InputLabel>Volunteer Name</InputLabel>
                     <Select
                       value={volunteerName}
@@ -96,7 +96,7 @@ const VolunteerMatchingForm = () => {
                   )}
                 </Grid>
                 <Grid item xs={12}>
-                  <FormControl fullWidth variant="outlined" sx={{ backgroundColor: '#F5EDED' }} error={errors.matchedEvent}>
+                  <FormControl fullWidth variant="outlined" sx={{ backgroundColor: '#f5f5f5' }} error={errors.matchedEvent}>
                     <InputLabel>Matched Event</InputLabel>
                     <Select
                       value={matchedEvent}

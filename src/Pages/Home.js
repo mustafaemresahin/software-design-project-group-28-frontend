@@ -39,7 +39,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const FeatureCard = styled(Card)({
-  backgroundColor: '#F5EDED',
+  backgroundColor: '#f5f5f5',
   boxShadow: '0px 6px 20px rgba(0,0,0,0.15)',
   borderRadius: '15px',
   padding: '30px',

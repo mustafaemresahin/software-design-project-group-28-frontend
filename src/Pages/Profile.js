@@ -49,7 +49,7 @@ const Profile = () => {
     
     return (
         <Box sx={{ padding: '35px' }}>
-            <Paper elevation={3} sx={{ padding: '10px', maxWidth: '900px', margin: '0 auto', backgroundColor: '#F5EDED' }}>
+            <Paper elevation={3} sx={{ padding: '10px', maxWidth: '900px', margin: '0 auto', backgroundColor: '#f5f5f5' }}>
                 <Typography variant="h4" sx={{ marginTop: '10px', marginBottom: '5px', textAlign: 'center', fontWeight: 'bold', color: '#6482AD' }}>
                     User Profile
                 </Typography>

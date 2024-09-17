@@ -39,7 +39,7 @@ const SidebarToggle = styled(Box)({
 });
 
 const StyledPaper = styled(Paper)({
-  backgroundColor: '#F5EDED',
+  backgroundColor: '#f5f5f5',
   boxShadow: '0px 4px 15px rgba(0,0,0,0.1)',
   borderRadius: '15px',
   padding: '20px',
