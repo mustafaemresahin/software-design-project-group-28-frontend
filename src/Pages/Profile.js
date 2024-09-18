@@ -125,9 +125,9 @@ const Profile = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Box sx={{ padding: '35px', backgroundColor: '#e3f2fd', minHeight: '100vh' }}>
+      <Box sx={{ padding: '35px', backgroundColor: '#E2DAD6', minHeight: '100vh' }}>
         <Paper elevation={6} sx={{ padding: '20px', maxWidth: '900px', margin: '0 auto', backgroundColor: '#ffffff', borderRadius: '15px' }}>
-          <Typography variant="h4" sx={{ marginBottom: '20px', textAlign: 'center', fontWeight: 'bold', color: '#1976d2' }}>
+          <Typography variant="h4" sx={{ marginBottom: '20px', textAlign: 'center', fontWeight: 'bold', color: '#6482AD' }}>
             Complete Your Profile
           </Typography>
           <form onSubmit={handleSubmit}>
@@ -284,9 +284,18 @@ const Profile = () => {
 
               {/* Submit Button */}
               <Grid item xs={12} sx={{ textAlign: 'center' }}>
-                <Button type="submit" variant="contained" color="primary" sx={{ padding: '10px 20px', borderRadius: '20px', marginTop: '20px' }}>
-                  Save Profile
-                </Button>
+              <Button 
+                type="submit" 
+                variant="contained" 
+                sx={{ 
+                backgroundColor: '#6482AD', 
+                padding: '10px 20px', 
+                borderRadius: '20px', 
+                marginTop: '20px',
+                '&:hover': {backgroundColor: '#7FA1C3'}
+                }}>
+                Save Profile
+              </Button>
               </Grid>
             </Grid>
           </form>
