@@ -2,12 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { TextField, MenuItem, FormControl, InputLabel, Select, Checkbox, Button, Box, Paper, Typography, Grid, Chip, Snackbar, Alert } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LoadScript, Autocomplete } from '@react-google-maps/api';
 import { Cancel as CancelIcon } from '@mui/icons-material';
 
-// Move libraries array outside of the component to prevent re-renders
-const libraries = ['places'];
-
+// List of US states
 const states = [
   { code: 'AL', name: 'Alabama' },
   { code: 'AK', name: 'Alaska' },
@@ -76,7 +73,6 @@ const Profile = () => {
     availability: [], // Updated to handle multiple dates
   });
 
-  const [autocomplete, setAutocomplete] = useState(null);
   const [showConfirmation, setShowConfirmation] = useState(false); // State for showing confirmation message
 
   // Load profile data from local storage on component mount
@@ -127,34 +123,6 @@ const Profile = () => {
     setShowConfirmation(true);
   };
 
-  const onLoad = (autoC) => {
-    setAutocomplete(autoC);
-  };
-
-  const onPlaceChanged = () => {
-    if (autocomplete !== null) {
-      const place = autocomplete.getPlace();
-      const addressComponents = place.address_components;
-
-      // Extract and fill in the address components
-      const streetNumber = addressComponents.find(comp => comp.types.includes('street_number'))?.long_name || '';
-      const route = addressComponents.find(comp => comp.types.includes('route'))?.long_name || '';
-      const city = addressComponents.find(comp => comp.types.includes('locality'))?.long_name || '';
-      const state = addressComponents.find(comp => comp.types.includes('administrative_area_level_1'))?.short_name || '';
-      const zip = addressComponents.find(comp => comp.types.includes('postal_code'))?.long_name || '';
-
-      setProfile({
-        ...profile,
-        address1: `${streetNumber} ${route}`,
-        city: city,
-        state: state,
-        zip: zip
-      });
-    } else {
-      console.log('Autocomplete is not loaded yet!');
-    }
-  };
-
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box sx={{ padding: '35px', backgroundColor: '#e3f2fd', minHeight: '100vh' }}>
@@ -178,22 +146,18 @@ const Profile = () => {
                 />
               </Grid>
 
-              {/* Address 1 with Autocomplete */}
+              {/* Address 1 */}
               <Grid item xs={12}>
-                <LoadScript googleMapsApiKey="" libraries={libraries}>
-                  <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
-                    <TextField
-                      label="Address 1"
-                      name="address1"
-                      inputProps={{ maxLength: 100 }}
-                      value={profile.address1}
-                      onChange={handleInputChange}
-                      required
-                      fullWidth
-                      variant="outlined"
-                    />
-                  </Autocomplete>
-                </LoadScript>
+                <TextField
+                  label="Address 1"
+                  name="address1"
+                  inputProps={{ maxLength: 100 }}
+                  value={profile.address1}
+                  onChange={handleInputChange}
+                  required
+                  fullWidth
+                  variant="outlined"
+                />
               </Grid>
 
               {/* Address 2 */}
@@ -332,7 +296,7 @@ const Profile = () => {
             open={showConfirmation} 
             autoHideDuration={4000} 
             onClose={() => setShowConfirmation(false)}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           >
             <Alert onClose={() => setShowConfirmation(false)} severity="success" sx={{ width: '100%' }}>
               Profile saved successfully!
