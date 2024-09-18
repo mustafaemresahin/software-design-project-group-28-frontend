@@ -180,7 +180,7 @@ const Profile = () => {
 
               {/* Address 1 with Autocomplete */}
               <Grid item xs={12}>
-                <LoadScript googleMapsApiKey="AIzaSyDSrG5Ng0BUoRCNJNDVRf8fPyy0f7ijeBo" libraries={libraries}>
+                <LoadScript googleMapsApiKey="" libraries={libraries}>
                   <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
                     <TextField
                       label="Address 1"
