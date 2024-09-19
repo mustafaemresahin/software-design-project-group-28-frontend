@@ -16,7 +16,7 @@ const Notification = () => {
         <Box sx={{ padding: '40px' }}>
             <Fade in={checked} timeout={600}>
                 <Box>
-                    <Paper elevation={3} sx={{ padding: '50px', marginBottom: '15px', backgroundColor: '#f5f5f5', maxWidth: '800px', margin: '0 auto' }}>
+                    <Paper elevation={3} sx={{ padding: '50px', marginBottom: '15px', backgroundColor: '#f5f5f5', maxWidth: '800px', margin: '0 auto', borderRadius: '15px' }}>
                         <Typography variant="h4" sx={{ marginTop: '8px', marginBottom: '22px', textAlign: 'center', fontWeight: 'bold', color: '#6482AD' }}>
                             Notifications
                         </Typography>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, MenuItem, FormControl, InputLabel, Select, Checkbox, Button, Box, Paper, Typography, Grid, Chip, Snackbar, Alert } from '@mui/material';
+import { TextField, MenuItem, FormControl, InputLabel, Select, Checkbox, Button, Box, Paper, Typography, Grid, Chip, Snackbar, Alert, Fade } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { Cancel as CancelIcon } from '@mui/icons-material';
@@ -123,10 +123,13 @@ const Profile = () => {
     setShowConfirmation(true);
   };
 
+  const [checked] = useState(true);
+
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box sx={{ padding: '35px', backgroundColor: '#E2DAD6', minHeight: '100vh' }}>
-        <Paper elevation={6} sx={{ padding: '20px', maxWidth: '900px', margin: '0 auto', backgroundColor: '#ffffff', borderRadius: '15px' }}>
+      <Fade in={checked} timeout={600}>
+        <Paper elevation={6} sx={{ padding: '20px', maxWidth: '900px', margin: '0 auto', backgroundColor: '#f5f5f5', borderRadius: '15px' }}>
           <Typography variant="h4" sx={{ marginBottom: '20px', textAlign: 'center', fontWeight: 'bold', color: '#6482AD' }}>
             Complete Your Profile
           </Typography>
@@ -312,6 +315,7 @@ const Profile = () => {
             </Alert>
           </Snackbar>
         </Paper>
+        </Fade>
       </Box>
     </LocalizationProvider>
   );

@@ -29,7 +29,7 @@ const Login = () => {
         box: {
             backgroundColor: '#f5f5f5',
             padding: '40px',
-            borderRadius: '8px',
+            borderRadius: '15px',
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
             width: '100%',
             maxWidth: '400px',

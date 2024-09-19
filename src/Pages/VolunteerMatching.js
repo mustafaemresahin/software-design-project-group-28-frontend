@@ -6,7 +6,7 @@ import { styled } from '@mui/system';
 const StyledCard = styled(Card)({
   background: '#f5f5f5', // Light beige background from the palette
   boxShadow: '0px 4px 20px rgba(0,0,0,0.1)',
-  borderRadius: '5px', // Less rounded corners
+  borderRadius: '15px', // Less rounded corners
   padding: '20px',
   maxWidth: '800px',
   margin: 'auto',
