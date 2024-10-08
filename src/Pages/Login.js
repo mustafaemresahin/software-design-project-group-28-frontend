@@ -1,19 +1,50 @@
+// src/Pages/Login.js
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Fade } from '@mui/material';
 
+const logoPath = '/volunteezy-logo.png';
 
-const logoPath = '/volunteezy-logo.png'; // Replace with the actual path to your logo image
-
-const Login = () => {
+const Login = ({ handleLoginState }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // Handle login logic here
-        console.log('Email:', email, 'Password:', password);
+
+        try {
+            const response = await fetch('http://localhost:4000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log('Login successful', data);
+                
+                // Store token and userName in localStorage
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userName', data.userName);
+
+                // Pass user's name to handleLoginState
+                if (handleLoginState) {
+                    handleLoginState(data.userName); // Use the userName from the backend response
+                }
+
+                navigate('/'); // Redirect to home after login
+            } else {
+                console.error('Login failed:', data.message);
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     const handleMouseEnter = () => setIsHovered(true);
@@ -36,9 +67,9 @@ const Login = () => {
             textAlign: 'center',
         },
         logo: {
-            width: '80px', // Adjust logo size
+            width: '80px',
             height: '80px',
-            marginBottom: '20px', // Space between logo and title
+            marginBottom: '20px',
         },
         title: {
             fontSize: '2rem',
@@ -81,59 +112,54 @@ const Login = () => {
             color: '#007bff',
             textDecoration: 'none',
         },
-        linkHover: {
-            textDecoration: 'underline',
-        },
     };
-
-    const [checked] = useState(true);
 
     return (
         <div style={styles.container}>
-            <Fade in={checked} timeout={600}>
-            <div style={styles.box}>
-                <img 
-                    src={logoPath} 
-                    alt="Volunteezy Logo"
-                    style={styles.logo} // Apply logo styles
-                />
-                <h1 style={styles.title}>Welcome Back!</h1>
-                <form onSubmit={handleSubmit}>
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label} htmlFor="email">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            style={styles.input}
-                        />
-                    </div>
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label} htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            style={styles.input}
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        style={styles.button}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                    >
-                        Login
-                    </button>
-                </form>
-                <p>
-                    Don't have an account? <Link to="/signup" style={styles.link} onMouseEnter={e => e.target.style.textDecoration = 'underline'} onMouseLeave={e => e.target.style.textDecoration = 'none'}>Sign up</Link>
-                </p>
-            </div>
+            <Fade in={true} timeout={600}>
+                <div style={styles.box}>
+                    <img 
+                        src={logoPath} 
+                        alt="Volunteezy Logo"
+                        style={styles.logo}
+                    />
+                    <h1 style={styles.title}>Welcome Back!</h1>
+                    <form onSubmit={handleLogin}>
+                        <div style={styles.inputGroup}>
+                            <label style={styles.label} htmlFor="email">Email</label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                style={styles.input}
+                            />
+                        </div>
+                        <div style={styles.inputGroup}>
+                            <label style={styles.label} htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                style={styles.input}
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            style={styles.button}
+                            onMouseEnter={handleMouseEnter}
+                            onMouseLeave={handleMouseLeave}
+                        >
+                            Login
+                        </button>
+                    </form>
+                    <p>
+                        Don't have an account? <Link to="/signup" style={styles.link}>Sign up</Link>
+                    </p>
+                </div>
             </Fade>
         </div>
     );
