@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'; // Import Typography
 const logoPath = '/volunteezy-logo.png'; // Replace with the actual path to your logo image
 
 const Registration = () => {
-    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -27,7 +27,7 @@ const Registration = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name, email, password, confirmPassword }),
+                body: JSON.stringify({ username, email, password, confirmPassword }),
             });
     
             const data = await response.json();
@@ -140,12 +140,12 @@ const Registration = () => {
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div style={styles.inputGroup}>
-                        <label style={styles.label} htmlFor="name">Name</label>
+                        <label style={styles.label} htmlFor="username">Username</label>
                         <input
                             type="text"
-                            id="name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            id="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                             required
                             style={styles.input}
                         />
