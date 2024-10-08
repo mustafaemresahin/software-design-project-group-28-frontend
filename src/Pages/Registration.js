@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Typography from '@mui/material/Typography'; // Import Typography
 
@@ -10,12 +11,39 @@ const Registration = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle registration logic here
-        console.log('Name:', name, 'Email:', email, 'Password:', password, 'Confirm Password:', confirmPassword);
-    };
+        
+        if (password !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
+    
+        try {
+            const response = await fetch('http://localhost:4000/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email, password, confirmPassword }),
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+                console.log('Registration successful', data);
+                // Optionally, store the token and redirect to a new page
+            } else {
+                console.error('Error:', data.message);
+                alert(data.message); // Show error message
+            }
+            navigate('/login');
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };    
 
     const handleMouseEnter = () => setIsHovered(true);
     const handleMouseLeave = () => setIsHovered(false);
