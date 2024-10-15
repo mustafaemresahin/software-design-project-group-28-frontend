@@ -33,7 +33,7 @@ const Registration = ({ handleLoginState }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name, email, password, confirmPassword }),
+                body: JSON.stringify({ username, email, password, confirmPassword }),
             });
 
             const registrationData = await registrationResponse.json();
@@ -181,12 +181,12 @@ const Registration = ({ handleLoginState }) => {
                 {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
                 <form onSubmit={handleSubmit}>
                     <div style={styles.inputGroup}>
-                        <label style={styles.label} htmlFor="name">Name</label>
+                        <label style={styles.label} htmlFor="username">Username</label>
                         <input
                             type="text"
-                            id="name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            id="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                             required
                             style={styles.input}
                         />
