@@ -1,49 +1,84 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import Typography from '@mui/material/Typography'; // Import Typography
+import Typography from '@mui/material/Typography';
 
 const logoPath = '/volunteezy-logo.png'; // Replace with the actual path to your logo image
 
-const Registration = () => {
+const Registration = ({ handleLoginState }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isHovered, setIsHovered] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         if (password !== confirmPassword) {
-            alert("Passwords do not match");
+            setErrorMessage("Passwords do not match");
             return;
         }
-    
+
+        setLoading(true); // Start loading
+        setErrorMessage(''); // Clear any previous error
+
         try {
-            const response = await fetch('http://localhost:4000/signup', {
+            // Registration API call
+            const registrationResponse = await fetch('http://localhost:4000/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ name, email, password, confirmPassword }),
             });
-    
-            const data = await response.json();
-    
-            if (response.ok) {
-                console.log('Registration successful', data);
-                // Optionally, store the token and redirect to a new page
+
+            const registrationData = await registrationResponse.json();
+
+            if (registrationResponse.ok) {
+                console.log('Registration successful', registrationData);
+
+                // Now call the login API to log the user in
+                const loginResponse = await fetch('http://localhost:4000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const loginData = await loginResponse.json();
+
+                if (loginResponse.ok) {
+                    console.log('Login successful after registration', loginData);
+
+                    // Store token and userName in localStorage
+                    localStorage.setItem('token', loginData.token);
+                    localStorage.setItem('userName', loginData.userName);
+
+                    // Pass user's name to handleLoginState
+                    if (handleLoginState) {
+                        handleLoginState(loginData.userName);
+                    }
+
+                    // Navigate to the profile page after registration and login
+                    navigate('/profile');
+                } else {
+                    setErrorMessage('Login failed after registration. Please try logging in manually.');
+                }
             } else {
-                console.error('Error:', data.message);
-                alert(data.message); // Show error message
+                setErrorMessage(registrationData.message || 'Registration failed. Please try again.');
             }
-            navigate('/login');
         } catch (error) {
+            setErrorMessage('An error occurred. Please try again.');
             console.error('Error:', error);
+        } finally {
+            setLoading(false); // End loading
         }
-    };    
+    };
 
     const handleMouseEnter = () => setIsHovered(true);
     const handleMouseLeave = () => setIsHovered(false);
@@ -73,12 +108,12 @@ const Registration = () => {
         logo: {
             width: '60px',
             height: '60px',
-            marginBottom: '10px', // Space between logo and title
+            marginBottom: '10px',
         },
         title: {
-            fontSize: '1.5rem', // Adjusted font size
+            fontSize: '1.5rem',
             color: '#6482AD',
-            fontFamily: 'Arial, sans-serif', // Apply the cursive font
+            fontFamily: 'Arial, sans-serif',
             fontWeight: 400,
         },
         inputGroup: {
@@ -117,8 +152,13 @@ const Registration = () => {
             color: '#007bff',
             textDecoration: 'none',
         },
-        linkHover: {
-            textDecoration: 'underline',
+        errorMessage: {
+            color: 'red',
+            marginBottom: '20px',
+        },
+        loadingSpinner: {
+            display: 'block',
+            margin: '20px auto',
         },
     };
 
@@ -129,15 +169,16 @@ const Registration = () => {
                     <img 
                         src={logoPath} 
                         alt="Volunteezy Logo"
-                        style={styles.logo} // Apply logo styles
+                        style={styles.logo}
                     />
                     <Typography
                         variant="h2"
-                        sx={styles.title} // Apply title styles
+                        sx={styles.title}
                     >
                         Create Your Account
                     </Typography>
                 </div>
+                {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
                 <form onSubmit={handleSubmit}>
                     <div style={styles.inputGroup}>
                         <label style={styles.label} htmlFor="name">Name</label>
@@ -188,12 +229,13 @@ const Registration = () => {
                         style={styles.button}
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
+                        disabled={loading} // Disable the button when loading
                     >
-                        Register
+                        {loading ? 'Registering...' : 'Register'}
                     </button>
                 </form>
                 <p>
-                    Already have an account? <Link to="/login" style={styles.link} onMouseEnter={e => e.target.style.textDecoration = 'underline'} onMouseLeave={e => e.target.style.textDecoration = 'none'}>Login</Link>
+                    Already have an account? <Link to="/login" style={styles.link}>Login</Link>
                 </p>
             </div>
         </div>
