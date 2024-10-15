@@ -33,7 +33,7 @@ const Registration = ({ handleLoginState }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, email, password, confirmPassword }),
+                body: JSON.stringify({ name, email, password, confirmPassword }),
             });
 
             const registrationData = await registrationResponse.json();
@@ -185,8 +185,8 @@ const Registration = ({ handleLoginState }) => {
                         <input
                             type="text"
                             id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             required
                             style={styles.input}
                         />
