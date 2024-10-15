@@ -72,7 +72,7 @@ function App() {
             <Route path="/" element={<Home />} />
             {/* Pass handleLoginState to Login component */}
             <Route path="/login" element={<Login handleLoginState={handleLoginState} />} />
-            <Route path="/signup" element={<Registration />} />
+            <Route path="/signup" element={<Registration handleLoginState={handleLoginState} />} />
             <Route path="/event-management" element={isLoggedIn ? <EventManagementForm /> : <Login handleLoginState={handleLoginState} />} />
             <Route path="/volunteer-history" element={<VolunteerHistory />} />
             <Route path="/notification" element={<Notification />} />
