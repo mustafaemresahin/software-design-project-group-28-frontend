@@ -1,7 +1,6 @@
-// src/Pages/Login.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Fade } from '@mui/material';
+import { Fade, CircularProgress } from '@mui/material';
 
 const logoPath = '/volunteezy-logo.png';
 
@@ -9,10 +8,14 @@ const Login = ({ handleLoginState }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isHovered, setIsHovered] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setLoading(true); // Start loading
+        setErrorMessage(''); // Clear any previous error
 
         try {
             const response = await fetch('http://localhost:4000/login', {
@@ -27,23 +30,25 @@ const Login = ({ handleLoginState }) => {
 
             if (response.ok) {
                 console.log('Login successful', data);
-                
+
                 // Store token and userName in localStorage
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userName', data.userName);
 
                 // Pass user's name to handleLoginState
                 if (handleLoginState) {
-                    handleLoginState(data.userName); // Use the userName from the backend response
+                    handleLoginState(data.userName);
                 }
 
                 navigate('/'); // Redirect to home after login
             } else {
-                console.error('Login failed:', data.message);
-                alert(data.message);
+                setErrorMessage(data.message || 'Login failed. Please try again.');
             }
         } catch (error) {
+            setErrorMessage('An error occurred. Please try again.');
             console.error('Error:', error);
+        } finally {
+            setLoading(false); // End loading
         }
     };
 
@@ -112,6 +117,15 @@ const Login = ({ handleLoginState }) => {
             color: '#007bff',
             textDecoration: 'none',
         },
+        errorMessage: {
+            color: 'red',
+            marginBottom: '20px',
+            fontSize: '0.9rem',
+        },
+        loadingSpinner: {
+            display: 'block',
+            margin: '20px auto',
+        },
     };
 
     return (
@@ -124,6 +138,7 @@ const Login = ({ handleLoginState }) => {
                         style={styles.logo}
                     />
                     <h1 style={styles.title}>Welcome Back!</h1>
+                    {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
                     <form onSubmit={handleLogin}>
                         <div style={styles.inputGroup}>
                             <label style={styles.label} htmlFor="email">Email</label>
@@ -152,8 +167,9 @@ const Login = ({ handleLoginState }) => {
                             style={styles.button}
                             onMouseEnter={handleMouseEnter}
                             onMouseLeave={handleMouseLeave}
+                            disabled={loading} // Disable the button while loading
                         >
-                            Login
+                            {loading ? <CircularProgress size={24} style={styles.loadingSpinner} /> : 'Login'}
                         </button>
                     </form>
                     <p>
