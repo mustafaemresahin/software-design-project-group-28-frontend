@@ -8,6 +8,8 @@ import Notification from './Pages/Notification';
 import Registration from './Pages/Registration';
 import VolunteerHistory from './Pages/VolunteerHistory';
 import EventManagementForm from './Pages/EventManagementForm';
+import EventList from './Pages/EventList';
+import EventDetails from './Pages/EventDetails';
 import VolunteerMatching from './Pages/VolunteerMatching';
 import Profile from './Pages/Profile';
 import { useState, useEffect } from 'react'; // Added useEffect to check for login on page load
@@ -73,7 +75,9 @@ function App() {
             {/* Pass handleLoginState to Login component */}
             <Route path="/login" element={<Login handleLoginState={handleLoginState} />} />
             <Route path="/signup" element={<Registration handleLoginState={handleLoginState} />} />
-            <Route path="/event-management" element={isLoggedIn ? <EventManagementForm /> : <Login handleLoginState={handleLoginState} />} />
+            <Route path="/create-event" element={isLoggedIn ? <EventManagementForm /> : <Login handleLoginState={handleLoginState} />} />
+            <Route path="/event-management" element={isLoggedIn ? <EventList /> : <Login handleLoginState={handleLoginState} />} />
+            <Route path="/events/:id" element={<EventDetails />} />
             <Route path="/volunteer-history" element={<VolunteerHistory />} />
             <Route path="/notification" element={<Notification />} />
             <Route path="/volunteer-matching" element={<VolunteerMatching />} />
