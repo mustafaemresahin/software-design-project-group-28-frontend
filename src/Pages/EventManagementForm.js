@@ -1,27 +1,28 @@
 import React, { useState } from 'react';
-import { Container, Button, Typography, TextField, Box, FormControl, InputLabel, Select, MenuItem, FormHelperText, Card, CardContent, Grid, Paper, Collapse, Fade } from '@mui/material';
+import { Container, Button, Typography, TextField, Box, FormControl, InputLabel, Select, MenuItem, FormHelperText, Card, CardContent, Grid, Paper, Collapse, Fade, CircularProgress } from '@mui/material';
 import { styled } from '@mui/system';
+import axios from 'axios';
 
 // Custom Styled Components
 const StyledCard = styled(Card)({
-  background: '#f5f5f5', // White background for contrast
+  background: '#f5f5f5',
   boxShadow: '0px 4px 20px rgba(0,0,0,0.1)',
-  borderRadius: '15px', // Less rounded corners
+  borderRadius: '15px',
   padding: '20px',
   maxWidth: '800px',
   margin: 'auto',
-  transition: 'all 0.3s ease', // Smooth transition effect
+  transition: 'all 0.3s ease',
 });
 
 const StyledButton = styled(Button)({
-  backgroundColor: '#6482AD', // Primary color from the palette
+  backgroundColor: '#6482AD',
   color: '#ffffff',
   fontWeight: 'bold',
   padding: '10px 20px',
-  transition: 'transform 0.2s ease', // Smooth button animation
+  transition: 'transform 0.2s ease',
   '&:hover': {
-    backgroundColor: '#7FA1C3', // Secondary color from the palette
-    transform: 'scale(1.03)', // Slightly enlarge on hover
+    backgroundColor: '#7FA1C3',
+    transform: 'scale(1.03)',
   },
 });
 
@@ -33,6 +34,7 @@ const EventManagementForm = () => {
   const [urgency, setUrgency] = useState('');
   const [eventDate, setEventDate] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
   const skillOptions = ['First Aid', 'Event Planning', 'Cooking', 'Child Care'];
@@ -40,43 +42,41 @@ const EventManagementForm = () => {
 
   const validateForm = () => {
     const newErrors = {};
-
     if (!eventName) newErrors.eventName = 'Event name is required.';
     if (!eventDescription) newErrors.eventDescription = 'Event description is required.';
     if (!location) newErrors.location = 'Location is required.';
     if (requiredSkills.length === 0) newErrors.requiredSkills = 'At least one skill is required.';
     if (!urgency) newErrors.urgency = 'Urgency is required.';
     if (!eventDate) newErrors.eventDate = 'Event date is required.';
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (validateForm()) {
-      setFormSubmitted(true);
+      setIsSubmitting(true);
+      const eventData = { eventName, eventDescription, location, requiredSkills, urgency, eventDate };
+      
+      try {
+        const response = await axios.post('http://localhost:4000/events/create', eventData);
+        setFormSubmitted(true);
+        setIsSubmitting(false);
+        setTimeout(() => setFormSubmitted(false), 3000);
+        console.log('Event created:', response.data);
 
-      const eventData = {
-        eventName,
-        eventDescription,
-        location,
-        requiredSkills,
-        urgency,
-        eventDate,
-      };
-      console.log('Event Data:', eventData);
-
-      // Clear form
-      setEventName('');
-      setEventDescription('');
-      setLocation('');
-      setRequiredSkills([]);
-      setUrgency('');
-      setEventDate('');
-
-      setTimeout(() => setFormSubmitted(false), 3000);
+        // Clear form
+        setEventName('');
+        setEventDescription('');
+        setLocation('');
+        setRequiredSkills([]);
+        setUrgency('');
+        setEventDate('');
+      } catch (error) {
+        console.error('Failed to create event:', error);
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -109,9 +109,7 @@ const EventManagementForm = () => {
                     value={eventDate}
                     onChange={(e) => setEventDate(e.target.value)}
                     fullWidth
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
+                    InputLabelProps={{ shrink: true }}
                     error={!!errors.eventDate}
                     helperText={errors.eventDate}
                     required
@@ -155,9 +153,7 @@ const EventManagementForm = () => {
                       label="Required Skills"
                     >
                       {skillOptions.map((skill, index) => (
-                        <MenuItem key={index} value={skill}>
-                          {skill}
-                        </MenuItem>
+                        <MenuItem key={index} value={skill}>{skill}</MenuItem>
                       ))}
                     </Select>
                     {errors.requiredSkills && <FormHelperText>{errors.requiredSkills}</FormHelperText>}
@@ -172,17 +168,15 @@ const EventManagementForm = () => {
                       label="Urgency"
                     >
                       {urgencyOptions.map((level, index) => (
-                        <MenuItem key={index} value={level}>
-                          {level}
-                        </MenuItem>
+                        <MenuItem key={index} value={level}>{level}</MenuItem>
                       ))}
                     </Select>
                     {errors.urgency && <FormHelperText>{errors.urgency}</FormHelperText>}
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} textAlign="center">
-                  <StyledButton type="submit">
-                    Create Event
+                  <StyledButton type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? <CircularProgress size={24} /> : 'Create Event'}
                   </StyledButton>
                 </Grid>
               </Grid>
