@@ -125,6 +125,19 @@ const Navbar = ({ isLoggedIn, userName, handleLogout }) => {
                                 >
                                     Volunteer Matching
                                 </Button>
+                                <Button 
+                                    component={Link} 
+                                    to="/notification" 
+                                    sx={{ 
+                                        color: '#fff', 
+                                        marginRight: '10px',
+                                        backgroundColor: isActive('/notification') ? '#7FA1C3' : 'inherit',
+                                        '&:hover': { backgroundColor: '#7FA1C3' },
+                                        fontWeight: isActive('/volunteer-matching') ? 'bold' : 'normal',
+                                    }}
+                                >
+                                    Notifications
+                                </Button>
                             </>
                         )}
                     </Box>
