@@ -4,7 +4,6 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { Cancel as CancelIcon } from '@mui/icons-material';
 
-// List of US states
 const states = [
   { code: 'AL', name: 'Alabama' },
   { code: 'AK', name: 'Alaska' },
@@ -70,21 +69,42 @@ const Profile = () => {
     zip: '',
     skills: [],
     preferences: '',
-    availability: [], // Updated to handle multiple dates
+    availability: [],
   });
 
-  const [showConfirmation, setShowConfirmation] = useState(false); // State for showing confirmation message
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const userId = localStorage.getItem('userId'); // Retrieve userId from localStorage after login
 
-  // Load profile data from local storage on component mount
+  console.log('User ID from localStorage in Profile page:', userId); // Debug log
+
+  // Fetch profile data on component mount
   useEffect(() => {
-    const savedProfile = localStorage.getItem('userProfile');
-    if (savedProfile) {
-      const parsedProfile = JSON.parse(savedProfile);
-      // Parse date strings into Date objects
-      parsedProfile.availability = parsedProfile.availability.map(dateString => new Date(dateString));
-      setProfile(parsedProfile);
-    }
-  }, []);
+    const fetchProfile = async () => {
+      if (userId) {
+        try {
+          const response = await fetch(`http://localhost:4000/profile/${userId}`);
+          const data = await response.json();
+          if (response.ok) {
+            // Ensure availability dates are parsed as Date objects
+            const parsedProfile = { 
+              ...data, 
+              availability: data.availability.map(dateString => new Date(dateString))
+            };
+            setProfile(parsedProfile);
+          } else {
+            setErrorMessage('Failed to load profile.');
+          }
+        } catch (error) {
+          setErrorMessage('Error fetching profile.');
+        }
+      } else {
+        setErrorMessage('User ID is undefined.');
+      }
+    };
+
+    fetchProfile();
+  }, [userId]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -102,219 +122,256 @@ const Profile = () => {
   };
 
   const removeAvailabilityDate = (dateToRemove) => {
-    setProfile({ 
-      ...profile, 
+    setProfile({
+      ...profile,
       availability: profile.availability.filter(date => date !== dateToRemove)
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(profile);
 
-    // Convert date objects to strings before saving
     const profileToSave = {
       ...profile,
-      availability: profile.availability.map(date => date.toISOString())
+      availability: profile.availability.map(date => date.toISOString()), // Convert dates to ISO strings
+      userId // Ensure userId is passed
     };
-    localStorage.setItem('userProfile', JSON.stringify(profileToSave));
 
-    // Display confirmation message
-    setShowConfirmation(true);
+    // Debug: Check the data being sent to the backend
+    console.log('Profile to Save:', profileToSave);
+
+    try {
+      const response = await fetch('http://localhost:4000/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(profileToSave) // Sending data to the server
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Profile updated successfully:', data); // Debug log to check backend response
+        setShowConfirmation(true);
+        localStorage.setItem('userProfile', JSON.stringify(profileToSave)); // Optional: Save locally
+      } else {
+        setErrorMessage(data.message || 'Failed to save profile.');
+      }
+    } catch (error) {
+      setErrorMessage('Error submitting profile.');
+    }
   };
-
-  const [checked] = useState(true);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box sx={{ padding: '35px', backgroundColor: '#E2DAD6', minHeight: '100vh' }}>
-      <Fade in={checked} timeout={600}>
-        <Paper elevation={6} sx={{ padding: '20px', maxWidth: '900px', margin: '0 auto', backgroundColor: '#f5f5f5', borderRadius: '15px' }}>
-          <Typography variant="h4" sx={{ marginBottom: '20px', textAlign: 'center', fontWeight: 'bold', color: '#6482AD' }}>
-            Complete Your Profile
-          </Typography>
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              {/* Full Name */}
-              <Grid item xs={12}>
-                <TextField
-                  label="Full Name"
-                  name="fullName"
-                  inputProps={{ maxLength: 50 }}
-                  value={profile.fullName}
-                  onChange={handleInputChange}
-                  required
-                  fullWidth
-                  variant="outlined"
-                />
-              </Grid>
-
-              {/* Address 1 */}
-              <Grid item xs={12}>
-                <TextField
-                  label="Address 1"
-                  name="address1"
-                  inputProps={{ maxLength: 100 }}
-                  value={profile.address1}
-                  onChange={handleInputChange}
-                  required
-                  fullWidth
-                  variant="outlined"
-                />
-              </Grid>
-
-              {/* Address 2 */}
-              <Grid item xs={12}>
-                <TextField
-                  label="Address 2"
-                  name="address2"
-                  inputProps={{ maxLength: 100 }}
-                  value={profile.address2}
-                  onChange={handleInputChange}
-                  fullWidth
-                  variant="outlined"
-                />
-              </Grid>
-
-              {/* City */}
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="City"
-                  name="city"
-                  inputProps={{ maxLength: 100 }}
-                  value={profile.city}
-                  onChange={handleInputChange}
-                  required
-                  fullWidth
-                  variant="outlined"
-                />
-              </Grid>
-
-              {/* State */}
-              <Grid item xs={12} md={3}>
-                <FormControl fullWidth required variant="outlined">
-                  <InputLabel>State</InputLabel>
-                  <Select
-                    name="state"
-                    value={profile.state}
+        <Fade in={true} timeout={600}>
+          <Paper elevation={6} sx={{ padding: '20px', maxWidth: '900px', margin: '0 auto', backgroundColor: '#f5f5f5', borderRadius: '15px' }}>
+            <Typography variant="h4" sx={{ marginBottom: '20px', textAlign: 'center', fontWeight: 'bold', color: '#6482AD' }}>
+              Complete Your Profile
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <Grid container spacing={3}>
+                {/* Full Name */}
+                <Grid item xs={12}>
+                  <TextField
+                    label="Full Name"
+                    name="fullName"
+                    inputProps={{ maxLength: 50 }}
+                    value={profile.fullName}
                     onChange={handleInputChange}
-                    label="State"
-                  >
-                    {states.map((state) => (
-                      <MenuItem key={state.code} value={state.code}>
-                        {state.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
+                    required
+                    fullWidth
+                    variant="outlined"
+                  />
+                </Grid>
 
-              {/* Zip Code */}
-              <Grid item xs={12} md={3}>
-                <TextField
-                  label="Zip Code"
-                  name="zip"
-                  inputProps={{ maxLength: 9, minLength: 5 }}
-                  value={profile.zip}
-                  onChange={handleInputChange}
-                  required
-                  fullWidth
-                  variant="outlined"
-                />
-              </Grid>
+                {/* Address 1 */}
+                <Grid item xs={12}>
+                  <TextField
+                    label="Address 1"
+                    name="address1"
+                    inputProps={{ maxLength: 100 }}
+                    value={profile.address1}
+                    onChange={handleInputChange}
+                    required
+                    fullWidth
+                    variant="outlined"
+                  />
+                </Grid>
 
-              {/* Skills */}
-              <Grid item xs={12}>
-                <FormControl fullWidth required variant="outlined">
-                  <InputLabel>Skills</InputLabel>
-                  <Select
-                    name="skills"
-                    multiple
-                    value={profile.skills}
-                    onChange={handleSkillChange}
-                    renderValue={(selected) => (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((value) => (
-                          <Chip key={value} label={value} />
-                        ))}
-                      </Box>
-                    )}
-                  >
-                    {skills.map((skill) => (
-                      <MenuItem key={skill} value={skill}>
-                        <Checkbox checked={profile.skills.includes(skill)} />
-                        {skill}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
+                {/* Address 2 */}
+                <Grid item xs={12}>
+                  <TextField
+                    label="Address 2"
+                    name="address2"
+                    inputProps={{ maxLength: 100 }}
+                    value={profile.address2}
+                    onChange={handleInputChange}
+                    fullWidth
+                    variant="outlined"
+                  />
+                </Grid>
 
-              {/* Preferences */}
-              <Grid item xs={12}>
-                <TextField
-                  label="Preferences (Optional)"
-                  name="preferences"
-                  value={profile.preferences}
-                  onChange={handleInputChange}
-                  multiline
-                  rows={4}
-                  fullWidth
-                  variant="outlined"
-                />
-              </Grid>
+                {/* City */}
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    label="City"
+                    name="city"
+                    inputProps={{ maxLength: 100 }}
+                    value={profile.city}
+                    onChange={handleInputChange}
+                    required
+                    fullWidth
+                    variant="outlined"
+                  />
+                </Grid>
 
-              {/* Availability */}
-              <Grid item xs={12}>
-                <DatePicker
-                  label="Add Availability"
-                  value={null}
-                  onChange={(newDate) => handleAvailabilityChange(newDate)}
-                  renderInput={(params) => <TextField {...params} variant="outlined" fullWidth />}
-                />
-                <Box sx={{ marginTop: '10px', display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {profile.availability.map((date, index) => (
-                    <Chip
-                      key={index}
-                      label={date.toLocaleDateString()}
-                      onDelete={() => removeAvailabilityDate(date)}
-                      deleteIcon={<CancelIcon />}
-                      sx={{ margin: '5px' }}
-                    />
-                  ))}
-                </Box>
-              </Grid>
+                {/* State */}
+                <Grid item xs={12} md={3}>
+                  <FormControl fullWidth required variant="outlined">
+                    <InputLabel>State</InputLabel>
+                    <Select
+                      name="state"
+                      value={profile.state}
+                      onChange={handleInputChange}
+                      label="State"
+                    >
+                      {states.map((state) => (
+                        <MenuItem key={state.code} value={state.code}>
+                          {state.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
 
-              {/* Submit Button */}
-              <Grid item xs={12} sx={{ textAlign: 'center' }}>
-              <Button 
-                type="submit" 
-                variant="contained" 
-                sx={{ 
-                backgroundColor: '#6482AD', 
-                padding: '10px 20px', 
-                borderRadius: '20px', 
-                marginTop: '20px',
-                '&:hover': {backgroundColor: '#7FA1C3'}
-                }}>
-                Save Profile
-              </Button>
+                {/* Zip Code */}
+                <Grid item xs={12} md={3}>
+                  <TextField
+                    label="Zip Code"
+                    name="zip"
+                    inputProps={{ maxLength: 9, minLength: 5 }}
+                    value={profile.zip}
+                    onChange={handleInputChange}
+                    required
+                    fullWidth
+                    variant="outlined"
+                  />
+                </Grid>
+
+                {/* Skills */}
+                <Grid item xs={12}>
+                  <FormControl fullWidth required variant="outlined">
+                    <InputLabel>Skills</InputLabel>
+                    <Select
+                      name="skills"
+                      multiple
+                      value={profile.skills}
+                      onChange={handleSkillChange}
+                      renderValue={(selected) => (
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                          {selected.map((value) => (
+                            <Chip key={value} label={value} />
+                          ))}
+                        </Box>
+                      )}
+                    >
+                      {skills.map((skill) => (
+                        <MenuItem key={skill} value={skill}>
+                          <Checkbox checked={profile.skills.includes(skill)} />
+                          {skill}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                {/* Preferences */}
+                <Grid item xs={12}>
+                  <TextField
+                    label="Preferences (Optional)"
+                    name="preferences"
+                    value={profile.preferences}
+                    onChange={handleInputChange}
+                    multiline
+                    rows={4}
+                    fullWidth
+                    variant="outlined"
+                  />
+                </Grid>
+
+                {/* Availability */}
+                <Grid item xs={12}>
+                  <DatePicker
+                    label="Add Availability"
+                    value={null}
+                    onChange={(newDate) => handleAvailabilityChange(newDate)}
+                    renderInput={(params) => <TextField {...params} variant="outlined" fullWidth />}
+                  />
+                  <Box sx={{ marginTop: '10px', display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    {profile.availability.map((date, index) => {
+                      const parsedDate = new Date(date); // Ensure it's a valid Date object
+
+                      // Check if parsedDate is valid before calling .toLocaleDateString()
+                      if (!isNaN(parsedDate)) {
+                        return (
+                          <Chip
+                            key={index}
+                            label={parsedDate.toLocaleDateString()} // Use the parsed date here
+                            onDelete={() => removeAvailabilityDate(date)}
+                            deleteIcon={<CancelIcon />}
+                            sx={{ margin: '5px' }}
+                          />
+                        );
+                      } else {
+                        console.error('Invalid date:', date);
+                        return null;
+                      }
+                    })}
+                  </Box>
+                </Grid>
+
+                {/* Submit Button */}
+                <Grid item xs={12} sx={{ textAlign: 'center' }}>
+                  <Button 
+                    type="submit" 
+                    variant="contained" 
+                    sx={{ 
+                      backgroundColor: '#6482AD', 
+                      padding: '10px 20px', 
+                      borderRadius: '20px', 
+                      marginTop: '20px',
+                      '&:hover': {backgroundColor: '#7FA1C3'}
+                    }}>
+                    Save Profile
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
-          </form>
-        
-          {/* Confirmation Snackbar */}
-          <Snackbar 
-            open={showConfirmation} 
-            autoHideDuration={4000} 
-            onClose={() => setShowConfirmation(false)}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          >
-            <Alert onClose={() => setShowConfirmation(false)} severity="success" sx={{ width: '100%' }}>
-              Profile saved successfully!
-            </Alert>
-          </Snackbar>
-        </Paper>
+            </form>
+
+            {/* Confirmation Snackbar */}
+            <Snackbar 
+              open={showConfirmation} 
+              autoHideDuration={4000} 
+              onClose={() => setShowConfirmation(false)}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+              <Alert onClose={() => setShowConfirmation(false)} severity="success" sx={{ width: '100%' }}>
+                Profile saved successfully!
+              </Alert>
+            </Snackbar>
+
+            {/* Error Snackbar */}
+            <Snackbar 
+              open={Boolean(errorMessage)} 
+              autoHideDuration={4000} 
+              onClose={() => setErrorMessage('')}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+              <Alert onClose={() => setErrorMessage('')} severity="error" sx={{ width: '100%' }}>
+                {errorMessage}
+              </Alert>
+            </Snackbar>
+          </Paper>
         </Fade>
       </Box>
     </LocalizationProvider>

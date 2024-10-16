@@ -31,9 +31,11 @@ const Login = ({ handleLoginState }) => {
             if (response.ok) {
                 console.log('Login successful', data);
 
-                // Store token and userName in localStorage
+                // Store token, userName, and userId in localStorage
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userName', data.userName);
+                localStorage.setItem('userId', data.userId); // Store the userId for profile access
+                
 
                 // Pass user's name to handleLoginState
                 if (handleLoginState) {
