@@ -37,8 +37,19 @@ const EventManagementForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const skillOptions = ['First Aid', 'Event Planning', 'Cooking', 'Child Care'];
-  const urgencyOptions = ['Low', 'Medium', 'High'];
+  const skillOptions = [
+    "Food Preparation & Serving",
+    "Cleaning & Sanitation",
+    "First Aid & CPR",
+    "Event Planning & Coordination",
+    "Counseling & Emotional Support",
+    "Child Care",
+    "Administrative & Clerical Work",
+    "Language Translation & Interpretation",
+    "Transportation & Driving",
+    "Handyman Skills (Basic Repairs & Maintenance)"
+  ];
+    const urgencyOptions = ['Low', 'Medium', 'High'];
 
   const validateForm = () => {
     const newErrors = {};

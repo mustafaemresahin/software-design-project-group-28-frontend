@@ -57,7 +57,18 @@ const states = [
   { code: 'WY', name: 'Wyoming' }
 ];
 
-const skills = ['Programming', 'Design', 'Marketing', 'Writing', 'Project Management'];
+const skills = [
+  "Food Preparation & Serving",
+  "Cleaning & Sanitation",
+  "First Aid & CPR",
+  "Event Planning & Coordination",
+  "Counseling & Emotional Support",
+  "Child Care",
+  "Administrative & Clerical Work",
+  "Language Translation & Interpretation",
+  "Transportation & Driving",
+  "Handyman Skills (Basic Repairs & Maintenance)"
+];
 
 const Profile = () => {
   const [profile, setProfile] = useState({
