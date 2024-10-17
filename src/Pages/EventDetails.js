@@ -120,10 +120,19 @@ const EventDetails = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEventData({
-      ...eventData,
-      [name]: value,
-    });
+
+    if (name === 'requiredSkills') {
+        const values = typeof value === 'string' ? value.split(',') : value; // Handle multi-select
+        setEventData({
+            ...eventData,
+            [name]: values,
+        });
+    } else {
+        setEventData({
+            ...eventData,
+            [name]: value,
+        });
+    }
   };
 
   const handleDelete = async () => {
@@ -158,6 +167,18 @@ const EventDetails = () => {
         </Grid>
       </Container>
     );
+  }
+
+  if (!eventData) {
+    return (
+      <Container sx={{ mt: 5, mb: 5 }}>
+          <StyledCard sx={{ backgroundColor: '#f5f5f5', color: '#6482AD' }}> {/* Update colors to match your theme */}
+              <Typography variant="h6" align="center">
+                  No events available.
+              </Typography>
+          </StyledCard>
+      </Container>
+  );
   }
 
   return (
