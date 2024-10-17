@@ -53,29 +53,41 @@ const EventManagementForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent the default form submission
 
     if (validateForm()) {
-      setIsSubmitting(true);
+      setIsSubmitting(true); // Set loading state
       const eventData = { eventName, eventDescription, location, requiredSkills, urgency, eventDate };
-      
+
       try {
         const response = await axios.post('http://localhost:4000/events/create', eventData);
-        setFormSubmitted(true);
-        setIsSubmitting(false);
-        setTimeout(() => setFormSubmitted(false), 3000);
         console.log('Event created:', response.data);
+        // Trigger the notification creation by making a separate API call to the notifsRoutes
+        try {
+          const notificationPayload = {
+            eventId: response.data.data._id, // Send the newly created event's ID
+            notifType: 'new event'
+          };
+          const notifresponse = await axios.post('http://localhost:4000/notifs/create', notificationPayload);
+          console.log('Notification response:', notifresponse.data);
+        } catch (notifError) {
+          console.error('Error creating notification:', notifError.message);
+        }
 
-        // Clear form
+        // Clear the form
         setEventName('');
         setEventDescription('');
         setLocation('');
         setRequiredSkills([]);
         setUrgency('');
         setEventDate('');
+        setFormSubmitted(true);
+        setTimeout(() => setFormSubmitted(false), 3000);
       } catch (error) {
         console.error('Failed to create event:', error);
-        setIsSubmitting(false);
+        alert('Failed to create event. Please try again.'); // Optionally alert the user
+      } finally {
+        setIsSubmitting(false); // Ensure loading state is reset
       }
     }
   };
