@@ -94,12 +94,24 @@ const EventDetails = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (validateForm()) {
       setIsSubmitting(true);
-
       try {
-        await axios.put(`http://localhost:4000/events/update/${id}`, eventData);
+        const response = await axios.put(`http://localhost:4000/events/update/${id}`, eventData);
+        console.log('Update response:', response.data);
+    
+        // Calling notification API endpoint
+        try {
+          const notificationPayload = {
+            eventId: id, // Use the ID directly, since you have it already
+            notifType: 'updated event'
+          };
+          const notifresponse = await axios.post('http://localhost:4000/notifs/create', notificationPayload);
+          console.log('Notification response:', notifresponse.data);
+        } catch (notifError) {
+          console.error('Error creating notification:', notifError.message);
+        }
+
         setIsSubmitting(false);
         setSnackbarMessage('Event updated successfully!');
         setSnackbarSeverity('success');
@@ -137,6 +149,24 @@ const EventDetails = () => {
 
   const handleDelete = async () => {
     try {
+
+      // Store event details before deleting
+      const eventDetails = {
+        //eventId: id,
+        eventName: eventData.eventName,
+        eventDescription: eventData.eventDescription,
+        eventLocation: eventData.location,
+        notifType: 'deleted event'
+      };
+
+      // Call notification API before the event is deleted
+      try {
+        const notifResponse = await axios.post('http://localhost:4000/notifs/delete', eventDetails);
+        console.log('Notification response:', notifResponse.data);
+      } catch (notifError) {
+        console.error('Error creating notification:', notifError.message);
+      }
+
       await axios.delete(`http://localhost:4000/events/delete/${id}`);
       navigate('/event-management'); // Navigate back to the event list after deletion
     } catch (error) {
