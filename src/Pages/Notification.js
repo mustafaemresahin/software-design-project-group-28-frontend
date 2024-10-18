@@ -1,16 +1,55 @@
-import React, { useState } from 'react';
-import { Typography, Box, Paper, List, ListItem, ListItemText, Fade } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Typography, Box, Paper, List, ListItem, ListItemText, Fade, Button } from '@mui/material';
+import axios from 'axios';
 
 const Notification = () => {
-    // Simulated notifications data
-    const [notifications] = useState([
-        { id: 1, message: "Event A is happening soon", date: "Moday, September 14, 2024" },
-        { id: 2, message: "Don't forget to RSVP for Event B", date: "Tuesday, September 15, 2024" },
-        { id: 3, message: "You have been assigned to Event C", date: "Wednesday, September 16, 2024" },
-        { id: 4, message: "You have been assigned to Event D", date: "Thursday, September 17, 2024"}
-    ]);
+    const [notifications, setNotifications] = useState([]);
+    
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/notifs/all'); // Adjust this URL to your backend endpoint
+                setNotifications(response.data); // Assume the backend returns an array of notifications
+                console.log(response.data);
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+            }
+        };
+
+        // Fetch notifications initially
+        fetchNotifications();
+
+        // Set interval to fetch notifications every 5 minutes
+        const interval = setInterval(() => {
+            fetchNotifications();
+        }, 5 * 60 * 1000); // 5 minutes in milliseconds
+
+        // Cleanup function to clear the interval on component unmount
+        return () => clearInterval(interval);
+    }, []);
+
+    // Function to dismiss a notification
+    const dismissNotification = (id) => {
+        setNotifications((prevNotifications) => 
+            prevNotifications.filter(notification => notification._id !== id) // Use _id instead of id
+        );
+    };
 
     const [checked] = useState(true);
+
+    // Function to format date
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
+    };
+
+    // Function to format time
+    const formatTime = (dateString) => {
+        if (!dateString) return '';
+        const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+        return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
+    };
 
     return (
         <Box sx={{ padding: '40px' }}>
@@ -22,14 +61,29 @@ const Notification = () => {
                         </Typography>
                         <List>
                             {notifications.map((notification) => (
-                                <Fade key={notification.id} in={checked} timeout={600}>
+                                <Fade key={notification._id} in={checked} timeout={600}>
                                     <Paper elevation={2} sx={{ padding: '10px', marginBottom: '15px', backgroundColor: '#f5f5f5' }}>
                                         <ListItem>
                                             <ListItemText 
-                                                primary={notification.message} 
-                                                secondary={notification.date} 
+                                                primary={notification.title} 
+                                                secondary={
+                                                    <>
+                                                        <div>{notification.eventName}</div>
+                                                        <div><strong>Date:</strong> {formatDate(notification.eventDate)}</div>
+                                                        <div><strong>Location:</strong> {notification.location}</div>
+                                                        <div><strong>Description:</strong> {notification.eventDescription}</div>
+                                                    </>
+                                                }
                                                 primaryTypographyProps={{ fontWeight: 'bold' }}
                                             />
+                                            <Button 
+                                                variant="outlined" 
+                                                color="primary" 
+                                                onClick={() => dismissNotification(notification._id)} 
+                                                sx={{ marginLeft: 'auto' }}
+                                            >
+                                                Dismiss
+                                            </Button>
                                         </ListItem>
                                     </Paper>
                                 </Fade>
