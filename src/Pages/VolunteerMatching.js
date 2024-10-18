@@ -108,12 +108,12 @@ const VolunteerMatchingForm = () => {
 
     // Check for duplicate assignments
     const duplicates = selectedVolunteers.filter(volunteerId =>
-      matches.some(match => match.eventId._id === matchedEvent && match.userId._id === volunteerId)
+      matches.some(match => match.eventId && match.eventId._id === matchedEvent && match.userId && match.userId._id === volunteerId)
     );
 
     if (duplicates.length > 0) {
       const duplicateNames = duplicates.map(duplicateId => {
-        const duplicateUser = matchedUsers.find(user => user.user._id === duplicateId);
+        const duplicateUser = matchedUsers.find(user => user.user && user.user._id === duplicateId);
         return duplicateUser ? duplicateUser.user.name : 'Unknown User';
       });
       setDuplicateAssignments(duplicateNames);
