@@ -123,6 +123,10 @@ const VolunteerMatchingForm = () => {
     try {
       setLoading(true);
       for (const volunteerId of selectedVolunteers) {
+        if (!volunteerId || !matchedEvent) {
+          console.error('Volunteer ID or Event ID is missing');
+          continue;
+        }
         await axios.post('http://localhost:4000/matching/assign', { userId: volunteerId, eventId: matchedEvent });
       }
       setFormSubmitted(true);

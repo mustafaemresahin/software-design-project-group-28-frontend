@@ -1,16 +1,22 @@
-import React, { useState, useEffect } from 'react';
+// src/Pages/Notification.js
+import React, { useState, useEffect } from 'react'; 
 import { Typography, Box, Paper, List, ListItem, ListItemText, Fade, Button } from '@mui/material';
 import axios from 'axios';
 
-const Notification = () => {
+const Notification = ({ currentUser }) => {
     const [notifications, setNotifications] = useState([]);
-    
+
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/notifs/all'); // Adjust this URL to your backend endpoint
-                setNotifications(response.data); // Assume the backend returns an array of notifications
-                console.log(response.data);
+                if (!currentUser) {
+                    console.error("No current user found, unable to fetch notifications.");
+                    return;
+                }
+                console.log('Current User ID:', currentUser); // Add this to check if userId is coming through correctly
+                
+                const response = await axios.get(`http://localhost:4000/notifs/all?userId=${currentUser}`);
+                setNotifications(response.data);
             } catch (error) {
                 console.error('Error fetching notifications:', error);
             }
@@ -22,16 +28,16 @@ const Notification = () => {
         // Set interval to fetch notifications every 5 minutes
         const interval = setInterval(() => {
             fetchNotifications();
-        }, 5 * 60 * 1000); // 5 minutes in milliseconds
+        }, 5 * 60 * 1000);
 
         // Cleanup function to clear the interval on component unmount
         return () => clearInterval(interval);
-    }, []);
+    }, [currentUser]);
 
     // Function to dismiss a notification
     const dismissNotification = (id) => {
         setNotifications((prevNotifications) => 
-            prevNotifications.filter(notification => notification._id !== id) // Use _id instead of id
+            prevNotifications.filter(notification => notification._id !== id)
         );
     };
 
@@ -44,15 +50,6 @@ const Notification = () => {
         return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
     };
     
-    /*
-    // Function to format time
-    const formatTime = (dateString) => {
-        if (!dateString) return '';
-        const options = { hour: 'numeric', minute: 'numeric', hour12: true };
-        return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
-    };
-    */
-
     return (
         <Box sx={{ padding: '40px' }}>
             <Fade in={checked} timeout={600}>

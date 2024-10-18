@@ -34,24 +34,35 @@ const theme = createTheme({
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState(''); // New state for user's name
+  const [userId, setUserId] = useState('');     // For backend requests
 
   // Check localStorage for token on app load
   useEffect(() => {
     const token = localStorage.getItem('token');
     const storedUserName = localStorage.getItem('userName');
+    const storedUserId = localStorage.getItem('userId'); // Assuming you store userId on login
+
+    console.log('Retrieved Token:', token);
+    console.log('Retrieved UserName:', storedUserName);
+    console.log('Retrieved UserId:', storedUserId);
 
     // If token exists, assume the user is logged in
     if (token) {
       setIsLoggedIn(true);
       setUserName(storedUserName); // Set the username from localStorage
+      setUserId(storedUserId); // Use the userId for backend requests
     }
+
+    console.log('Stored User ID:', storedUserId); // Add this to check if it's being retrieved from localStorage
   }, []);
 
   // Handle login
-  const handleLoginState = (name) => {
+  const handleLoginState = (name, id) => {
     setIsLoggedIn(true);
     setUserName(name); // Set the user's name after login
+    setUserId(id); // Store userId
     localStorage.setItem('userName', name); // Persist the user's name in localStorage
+    localStorage.setItem('userId', id); // Persist the userId in localStorage
   };
 
   // Handle logout
@@ -79,7 +90,8 @@ function App() {
             <Route path="/event-management" element={isLoggedIn ? <EventList /> : <Login handleLoginState={handleLoginState} />} />
             <Route path="/events/:id" element={<EventDetails />} />
             <Route path="/volunteer-history" element={<VolunteerHistory />} />
-            <Route path="/notification" element={<Notification />} />
+            {/* Pass userName to Notification as currentUser */}
+            <Route path="/notification" element={<Notification currentUser={userId} />} />
             <Route path="/volunteer-matching" element={<VolunteerMatching />} />
             <Route path="/profile" element={<Profile />} />
           </Routes>
