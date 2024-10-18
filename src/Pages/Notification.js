@@ -43,13 +43,15 @@ const Notification = () => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
     };
-
+    
+    /*
     // Function to format time
     const formatTime = (dateString) => {
         if (!dateString) return '';
         const options = { hour: 'numeric', minute: 'numeric', hour12: true };
         return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
     };
+    */
 
     return (
         <Box sx={{ padding: '40px' }}>
