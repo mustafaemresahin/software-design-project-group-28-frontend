@@ -63,7 +63,7 @@ const Registration = ({ handleLoginState }) => {
 
           // Update login state in the parent component (if needed)
           if (handleLoginState) {
-            handleLoginState(loginData.userName);
+            handleLoginState(loginData.userName, loginData.userId);
           }
 
           // Redirect the user to the profile page
