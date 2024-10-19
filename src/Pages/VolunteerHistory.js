@@ -1,42 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Container,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  Box,
-  Collapse,
-  Button,
-  Fade
+  Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Collapse, Button, Fade, CircularProgress, Alert
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import CheckIcon from '@mui/icons-material/Check';
-import CancelIcon from '@mui/icons-material/Cancel';
+import { styled } from '@mui/system';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import CheckIcon from '@mui/icons-material/Check';
+import CancelIcon from '@mui/icons-material/Cancel';
 
-// Custom Styled Components
+// Custom Styled Components (unchanged)
 const StyledContainer = styled(Container)({
   marginTop: '20px',
   marginBottom: '20px',
   display: 'flex',
   position: 'relative',
-});
-
-const SidebarToggle = styled(Box)({
-  position: 'fixed',
-  top: '100px',
-  left: '20px',
-  zIndex: 1000,
 });
 
 const StyledPaper = styled(Paper)({
@@ -123,232 +100,126 @@ const formatDate = (dateStr) => {
   return new Date(dateStr).toLocaleDateString(undefined, options);
 };
 
-// Sample Data
-const sampleData = [
-  {
-    eventName: 'Food Drive',
-    eventDescription: 'A community food drive for the homeless.',
-    location: 'Community Center',
-    requiredSkills: ['Teamwork', 'Organization'],
-    urgency: 'High',
-    eventDate: '2024-08-01',
-    participationStatus: 'Attended',
-  },
-  {
-    eventName: 'Charity Run',
-    eventDescription: 'A charity run to raise funds for cancer research.',
-    location: 'City Park',
-    requiredSkills: ['Endurance', 'Motivation'],
-    urgency: 'Medium',
-    eventDate: '2024-09-01',
-    participationStatus: 'Missed',
-  },
-  {
-    eventName: 'Beach Cleanup',
-    eventDescription: 'An initiative to clean up the local beach and preserve marine life.',
-    location: 'Sunny Beach',
-    requiredSkills: ['Physical Stamina', 'Environmental Awareness'],
-    urgency: 'High',
-    eventDate: '2024-09-15',
-    participationStatus: 'Attended',
-  },
-  {
-    eventName: 'Community Garden',
-    eventDescription: 'Planting and maintaining a community garden to promote local agriculture.',
-    location: 'Greenfield Park',
-    requiredSkills: ['Gardening', 'Teamwork'],
-    urgency: 'Low',
-    eventDate: '2024-10-05',
-    participationStatus: 'Attended',
-  },
-  {
-    eventName: 'Fundraising Gala',
-    eventDescription: 'A formal event to raise funds for local charities.',
-    location: 'Grand Hotel',
-    requiredSkills: ['Event Planning', 'Networking'],
-    urgency: 'Medium',
-    eventDate: '2024-11-01',
-    participationStatus: 'Missed',
-  },
-  {
-    eventName: 'Health Fair',
-    eventDescription: 'A fair providing free health screenings and wellness information to the community.',
-    location: 'Community Center',
-    requiredSkills: ['Healthcare Knowledge', 'Public Speaking'],
-    urgency: 'High',
-    eventDate: '2024-11-15',
-    participationStatus: 'Attended',
-  },
-  {
-    eventName: 'Winter Clothing Drive',
-    eventDescription: 'Collecting winter clothing to distribute to those in need during the colder months.',
-    location: 'Local Library',
-    requiredSkills: ['Organization', 'Communication'],
-    urgency: 'Medium',
-    eventDate: '2024-12-01',
-    participationStatus: 'Attended',
-  },
-  {
-    eventName: 'Book Fair',
-    eventDescription: 'Organizing a fair to promote literacy and distribute books to underprivileged children.',
-    location: 'City Hall',
-    requiredSkills: ['Organization', 'Literacy Promotion'],
-    urgency: 'Low',
-    eventDate: '2024-12-15',
-    participationStatus: 'Missed',
-  },
-];
 const VolunteerHistory = () => {
-  const [filters, setFilters] = useState({
-    urgency: { High: true, Medium: true, Low: true },
-    status: { Attended: true, Missed: true },
-  });
-  const [showFilters, setShowFilters] = useState(false);  // Toggle filter sidebar
-  const [expandedRow, setExpandedRow] = useState(null);  // Track which row is expanded
+  const [expandedRow, setExpandedRow] = useState(null); // Track which row is expanded
+  const [volunteerHistory, setVolunteerHistory] = useState([]); // State to store fetched data
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
 
-  const handleFilterChange = (event) => {
-    const { name, value, checked } = event.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: {
-        ...prevFilters[name],
-        [value]: checked,
-      },
-    }));
-  };
+  // Fetch volunteer history when component mounts
+  useEffect(() => {
+    const fetchVolunteerHistory = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('No token found, please log in.');
+
+        const response = await fetch('http://localhost:4000/api/history', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          const errorDetails = await response.json();
+          console.error('Server responded with error:', errorDetails);
+          throw new Error('Failed to fetch volunteer history.');
+        }
+
+        const data = await response.json();
+        console.log('Fetched history data:', data);
+        setVolunteerHistory(data);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching volunteer history:', err);
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchVolunteerHistory();
+  }, []);
 
   const handleRowClick = (index) => {
     setExpandedRow(expandedRow === index ? null : index);
   };
 
-  const filteredData = sampleData.filter(entry =>
-    filters.urgency[entry.urgency] && filters.status[entry.participationStatus]
-  );
+  if (loading) {
+    return <CircularProgress />;
+  }
 
-  const [checked] = useState(true);
+  if (error) {
+    return <Alert severity="error">{error}</Alert>;
+  }
 
   return (
-    <Fade in={checked} timeout={600}>
-    <StyledContainer>
-      {/* Sidebar Toggle Button */}
-      <SidebarToggle>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<FilterAltIcon />}
-          onClick={() => setShowFilters(!showFilters)}
-        >
-          Filters
-        </Button>
-      </SidebarToggle>
-
-      {/* Collapsible Filter Section */}
-      <Collapse in={showFilters} orientation="horizontal" sx={{ width: '250px', position: 'absolute', left: 0 }}>
-        <Box sx={{ width: '220px', marginRight: '10px' }}> {/* Smaller width for the filter box */}
-          <StyledPaper sx={{ padding: '20px' }}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
-              Filters {/* Slightly larger font for title */}
+    <Fade in={true} timeout={600}>
+      <StyledContainer>
+        {/* Volunteer History Table */}
+        <Box sx={{ flex: 1 }}>
+          <StyledPaper>
+            <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4, color: '#6482AD', fontWeight: 'bold' }}>
+              Volunteer History
             </Typography>
-            <FormGroup>
-              {/* Make "Urgency" stand out */}
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '1.1rem', marginTop: '10px' }}>
-                Urgency
-              </Typography>
-              {['High', 'Medium', 'Low'].map((level) => (
-                <FormControlLabel
-                  key={level}
-                  control={
-                    <Checkbox
-                      checked={filters.urgency[level]}
-                      onChange={handleFilterChange}
-                      name="urgency"
-                      value={level}
-                    />
-                  }
-                  label={level}
-                />
-              ))}
 
-              {/* Make "Participation Status" stand out */}
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', fontSize: '1.1rem', marginTop: '10px' }}>
-                Participation Status
-              </Typography>
-              {['Attended', 'Missed'].map((status) => (
-                <FormControlLabel
-                  key={status}
-                  control={
-                    <Checkbox
-                      checked={filters.status[status]}
-                      onChange={handleFilterChange}
-                      name="status"
-                      value={status}
-                    />
-                  }
-                  label={status}
-                />
-              ))}
-            </FormGroup>
-          </StyledPaper>
-        </Box>
-      </Collapse>
+            <TableContainer component={Paper}>
+              <StyledTable>
+                <TableHead>
+                  <TableRow>
+                    <StyledTableHeaderCell>Event Name</StyledTableHeaderCell>
+                    <StyledTableHeaderCell>Event Date</StyledTableHeaderCell>
+                    <StyledTableHeaderCell>Urgency</StyledTableHeaderCell>
+                    <StyledTableHeaderCell>Status</StyledTableHeaderCell>
+                    <StyledTableHeaderCell>Expand</StyledTableHeaderCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {volunteerHistory.length > 0 ? (
+                    volunteerHistory.map((entry, index) => (
+                      <React.Fragment key={index}>
+                        <StyledTableRow onClick={() => handleRowClick(index)} style={{ cursor: 'pointer' }}>
+                          <StyledTableCell>{entry.eventName}</StyledTableCell>
+                          <StyledTableCell>{formatDate(entry.eventDate)}</StyledTableCell>
+                          <StyledUrgencyCell urgency={entry.urgency}>{entry.urgency}</StyledUrgencyCell>
+                          <StyledTableCell>{statusIcon(entry.participationStatus)}</StyledTableCell>
+                          <StyledTableCell>
+                            {expandedRow === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                          </StyledTableCell>
+                        </StyledTableRow>
 
-      {/* Volunteer History Table */}
-      <Box sx={{ flex: 1, ml: showFilters ? '270px' : '20px' }}> {/* Adjust layout when filter box is shown */}
-        <StyledPaper>
-          <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4, color: '#6482AD', fontWeight: 'bold' }}>
-            Volunteer History
-          </Typography>
-
-          <TableContainer component={Paper}>
-            <StyledTable>
-              <TableHead>
-                <TableRow>
-                  <StyledTableHeaderCell>Event Name</StyledTableHeaderCell>
-                  <StyledTableHeaderCell>Event Date</StyledTableHeaderCell>
-                  <StyledTableHeaderCell>Urgency</StyledTableHeaderCell>
-                  <StyledTableHeaderCell>Status</StyledTableHeaderCell>
-                  <StyledTableHeaderCell>Expand</StyledTableHeaderCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredData.map((entry, index) => (
-                  <React.Fragment key={index}>
-                    <StyledTableRow onClick={() => handleRowClick(index)} style={{ cursor: 'pointer' }}>
-                      <StyledTableCell>{entry.eventName}</StyledTableCell>
-                      <StyledTableCell>{formatDate(entry.eventDate)}</StyledTableCell>
-                      <StyledUrgencyCell urgency={entry.urgency}>{entry.urgency}</StyledUrgencyCell>
-                      <StyledTableCell>{statusIcon(entry.participationStatus)}</StyledTableCell>
-                      <StyledTableCell>
-                        {expandedRow === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                      </StyledTableCell>
-                    </StyledTableRow>
-
-                    {/* Collapsible content */}
+                        {/* Collapsible content */}
+                        <TableRow>
+                          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                            <Collapse in={expandedRow === index} timeout="auto" unmountOnExit>
+                              <Box sx={{ margin: 1 }}>
+                                <Typography variant="subtitle1" gutterBottom>
+                                  <strong>Description:</strong> {entry.eventDescription}
+                                </Typography>
+                                <Typography variant="subtitle1" gutterBottom>
+                                  <strong>Location:</strong> {entry.location}
+                                </Typography>
+                                <Typography variant="subtitle1" gutterBottom>
+                                  <strong>Required Skills:</strong> {entry.requiredSkills.join(', ')}
+                                </Typography>
+                              </Box>
+                            </Collapse>
+                          </TableCell>
+                        </TableRow>
+                      </React.Fragment>
+                    ))
+                  ) : (
                     <TableRow>
-                      <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                        <Collapse in={expandedRow === index} timeout="auto" unmountOnExit>
-                          <Box sx={{ margin: 1 }}>
-                            <Typography variant="subtitle1" gutterBottom>
-                              <strong>Event Description:</strong> {entry.eventDescription}
-                            </Typography>
-                            <Typography variant="subtitle1" gutterBottom>
-                              <strong>Location:</strong> {entry.location}
-                            </Typography>
-                            <Typography variant="subtitle1" gutterBottom>
-                              <strong>Required Skills:</strong> {entry.requiredSkills.join(', ')}
-                            </Typography>
-                          </Box>
-                        </Collapse>
+                      <TableCell colSpan={5} align="center">
+                        No volunteer history available.
                       </TableCell>
                     </TableRow>
-                  </React.Fragment>
-                ))}
-              </TableBody>
-            </StyledTable>
-          </TableContainer>
-        </StyledPaper>
-      </Box>
-    </StyledContainer>
+                  )}
+                </TableBody>
+              </StyledTable>
+            </TableContainer>
+          </StyledPaper>
+        </Box>
+      </StyledContainer>
     </Fade>
   );
 };
