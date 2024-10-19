@@ -87,7 +87,7 @@ const Profile = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const userId = localStorage.getItem('userId'); // Retrieve userId from localStorage after login
 
-  console.log('User ID from localStorage in Profile page:', userId); // Debug log
+  //console.log('User ID from localStorage in Profile page:', userId); // Debug log
 
   // Fetch profile data on component mount
   useEffect(() => {
