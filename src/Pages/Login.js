@@ -39,7 +39,7 @@ const Login = ({ handleLoginState }) => {
 
                 // Pass user's name to handleLoginState
                 if (handleLoginState) {
-                    handleLoginState(data.userName);
+                    handleLoginState(data.userName, data.userId);
                 }
 
                 navigate('/'); // Redirect to home after login
