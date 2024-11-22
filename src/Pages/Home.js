@@ -46,7 +46,9 @@ const FeatureCard = styled(Card)({
   textAlign: 'center',
   height: '100%',
   animation: `${fadeIn} 1s ease-out`,
-  transition: 'transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) !important',
+  transition: `transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), 
+               background-color 0.8s cubic-bezier(0.25, 0.8, 0.25, 1), 
+               color 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) !important`,
   '&:hover': {
     backgroundColor: '#7FA1C3 !important',
     color: '#F5EDED !important',
@@ -68,17 +70,16 @@ const LoadingScreen = styled(Box)({
   animation: `${fadeIn} 1.5s ease-out`,
 });
 
-const Home = () => {
+const Home = ({ userRole, isLoggedIn }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Set a delay before showing the homepage content
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000); // 2-second delay for the loading screen
+    }, 1000); // 1-second delay for the loading screen
 
-    return () => clearTimeout(timer); // Clear the timer on component unmount
+    return () => clearTimeout(timer);
   }, []);
 
   const navigateToLogin = () => {
@@ -89,11 +90,19 @@ const Home = () => {
     navigate(path);
   };
 
-  const features = [
-    { title: 'Manage Events', path: '/event-management', description: 'Create and manage events with ease. Track participants and ensure successful event execution.' },
-    { title: 'Volunteer Matching', path: '/volunteer-matching', description: 'Match volunteers to the right events based on their skills and availability. Optimize your impact.' },
-    { title: 'Real-Time Notifications', path: '/notification', description: 'Keep everyone informed with real-time notifications for event updates and volunteer assignments.' },
-  ];
+  // Define feature cards for different roles
+  const featureCards = {
+    admin: [
+      { title: 'Manage Events', path: '/event-management', description: 'Create and manage events with ease. Track participants and ensure successful event execution.' },
+      { title: 'Volunteer Matching', path: '/volunteer-matching', description: 'Match volunteers to the right events based on their skills and availability.' },
+      { title: 'Admin Dashboard', path: '/admin-dashboard', description: 'Access advanced tools and analytics to manage your platform.' },
+    ],
+    user: [
+      { title: 'Find Events', path: '/event-list', description: 'Explore available events and sign up to participate.' },
+      { title: 'Your Volunteer History', path: '/volunteer-history', description: 'View your past contributions and achievements.' },
+      { title: 'Notifications', path: '/notification', description: 'Stay updated with real-time event updates and reminders.' },
+    ],
+  };
 
   if (loading) {
     // Render the loading screen
@@ -112,21 +121,23 @@ const Home = () => {
     );
   }
 
-  // Render the homepage content after the loading screen disappears
+  // Get features based on passed userRole
+  const features = featureCards[userRole] || featureCards['user']; // Default to 'user' if role is undefined
+
   return (
     <Container maxWidth="lg" sx={{ mt: 3, mb: 5 }}>
       <HeroSection>
-        <Box sx={{ display: 'inline-flex', alignItems: 'center' }}> 
-          <Typography 
-            variant="h2" 
-            gutterBottom 
+        <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
+          <Typography
+            variant="h2"
+            gutterBottom
             sx={{ fontWeight: 'bold', marginRight: '10px' }}
           >
-            Welcome to
+            Welcome, {userRole === 'admin' ? 'Admin' : 'Volunteer'}
           </Typography>
           <Typography
             variant="h2"
-            sx={{ 
+            sx={{
               color: '#fff',
               fontFamily: '"Pacifico", cursive',
               fontWeight: 400,
@@ -140,11 +151,15 @@ const Home = () => {
         </Box>
 
         <Typography variant="h5" paragraph>
-          Empowering communities through seamless volunteer management.
+          {userRole === 'admin'
+            ? 'Empowering administrators with advanced event management tools.'
+            : 'Empowering communities through seamless volunteer management.'}
         </Typography>
-        <StyledButton variant="contained" onClick={navigateToLogin}>
-          Get Started
-        </StyledButton>
+        {!isLoggedIn ? (
+          <StyledButton variant="contained" onClick={navigateToLogin}>
+            Get Started
+          </StyledButton>
+        ) : null}
       </HeroSection>
 
       <Grid container spacing={4} sx={{ mt: -2 }}>
