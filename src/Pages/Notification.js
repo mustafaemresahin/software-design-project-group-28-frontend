@@ -16,7 +16,7 @@ const Notification = ({ currentUser }) => {
                 console.log('Current User ID:', currentUser); // Add this to check if userId is coming through correctly
                 
                 const response = await axios.get(`http://localhost:4000/notifs/all?userId=${currentUser}`);
-                setNotifications(response.data);
+                setNotifications(response.data.reverse());
             } catch (error) {
                 console.error('Error fetching notifications:', error);
             }
@@ -43,11 +43,15 @@ const Notification = ({ currentUser }) => {
 
     const [checked] = useState(true);
 
-    // Function to format date
+    // Function to format date and add a day
     const formatDate = (dateString) => {
         if (!dateString) return '';
+        
+        const date = new Date(dateString);
+        date.setDate(date.getDate() + 1); // Add one day to the date
+
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
+        return new Intl.DateTimeFormat('en-US', options).format(date);
     };
     
     return (
