@@ -107,7 +107,9 @@ const EventList = () => {
                       {event.eventName}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-                      {new Date(event.eventDate).toLocaleDateString()}
+                      {new Date(new Date(event.eventDate).setDate(new Date(event.eventDate).getDate()))
+                        .toISOString()
+                        .split('T')[0]}
                     </Typography>
                     <Typography variant="body1" paragraph>
                       {event.eventDescription.length > 100
