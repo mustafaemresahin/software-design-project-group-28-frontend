@@ -1,4 +1,3 @@
-// src/Components/Navbar.js
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box, IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import { Link, useNavigate, useLocation } from 'react-router-dom'; // Added useLocation for active state
@@ -6,7 +5,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 const logoPath = process.env.PUBLIC_URL + '/volunteezy-logo.png';
 
-const Navbar = ({ isLoggedIn, userName, handleLogout }) => {
+const Navbar = ({ isLoggedIn, userName, userRole, handleLogout }) => {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const navigate = useNavigate();
     const location = useLocation(); // For active state detection
@@ -86,58 +85,94 @@ const Navbar = ({ isLoggedIn, userName, handleLogout }) => {
                         </Button>
                         {isLoggedIn && (
                             <>
-                                <Button 
-                                    component={Link} 
-                                    to="/event-management" 
-                                    sx={{ 
-                                        color: '#fff', 
-                                        marginRight: '10px',
-                                        backgroundColor: isActive('/event-management') ? '#7FA1C3' : 'inherit',
-                                        '&:hover': { backgroundColor: '#7FA1C3' },
-                                        fontWeight: isActive('/event-management') ? 'bold' : 'normal',
-                                    }}
-                                >
-                                    Event Manager
-                                </Button>
-                                <Button 
-                                    component={Link} 
-                                    to="/volunteer-history" 
-                                    sx={{ 
-                                        color: '#fff', 
-                                        marginRight: '10px',
-                                        backgroundColor: isActive('/volunteer-history') ? '#7FA1C3' : 'inherit',
-                                        '&:hover': { backgroundColor: '#7FA1C3' },
-                                        fontWeight: isActive('/volunteer-history') ? 'bold' : 'normal',
-                                    }}
-                                >
-                                    Volunteer History
-                                </Button>
-                                <Button 
-                                    component={Link} 
-                                    to="/volunteer-matching" 
-                                    sx={{ 
-                                        color: '#fff', 
-                                        marginRight: '10px',
-                                        backgroundColor: isActive('/volunteer-matching') ? '#7FA1C3' : 'inherit',
-                                        '&:hover': { backgroundColor: '#7FA1C3' },
-                                        fontWeight: isActive('/volunteer-matching') ? 'bold' : 'normal',
-                                    }}
-                                >
-                                    Volunteer Matching
-                                </Button>
-                                <Button 
-                                    component={Link} 
-                                    to="/notification" 
-                                    sx={{ 
-                                        color: '#fff', 
-                                        marginRight: '10px',
-                                        backgroundColor: isActive('/notification') ? '#7FA1C3' : 'inherit',
-                                        '&:hover': { backgroundColor: '#7FA1C3' },
-                                        fontWeight: isActive('/volunteer-matching') ? 'bold' : 'normal',
-                                    }}
-                                >
-                                    Notifications
-                                </Button>
+                                {/* Links for Admin Users */}
+                                {userRole === 'admin' && (
+                                    <>
+                                        <Button 
+                                            component={Link} 
+                                            to="/event-management" 
+                                            sx={{ 
+                                                color: '#fff', 
+                                                marginRight: '10px',
+                                                backgroundColor: isActive('/event-management') ? '#7FA1C3' : 'inherit',
+                                                '&:hover': { backgroundColor: '#7FA1C3' },
+                                                fontWeight: isActive('/event-management') ? 'bold' : 'normal',
+                                            }}
+                                        >
+                                            Event Manager
+                                        </Button>
+                                        <Button 
+                                            component={Link} 
+                                            to="/volunteer-matching" 
+                                            sx={{ 
+                                                color: '#fff', 
+                                                marginRight: '10px',
+                                                backgroundColor: isActive('/volunteer-matching') ? '#7FA1C3' : 'inherit',
+                                                '&:hover': { backgroundColor: '#7FA1C3' },
+                                                fontWeight: isActive('/volunteer-matching') ? 'bold' : 'normal',
+                                            }}
+                                        >
+                                            Volunteer Matching
+                                        </Button>
+                                        <Button 
+                                            component={Link} 
+                                            to="/admin-dashboard" 
+                                            sx={{ 
+                                                color: '#fff', 
+                                                marginRight: '10px',
+                                                backgroundColor: isActive('/admin-dashboard') ? '#7FA1C3' : 'inherit',
+                                                '&:hover': { backgroundColor: '#7FA1C3' },
+                                                fontWeight: isActive('/admin-dashboard') ? 'bold' : 'normal',
+                                            }}
+                                        >
+                                            Admin Dashboard
+                                        </Button>
+                                    </>
+                                )}
+                                {/* Links for Regular Users */}
+                                {userRole === 'user' && (
+                                    <>
+                                    <Button 
+                                            component={Link} 
+                                            to="/event-list" 
+                                            sx={{ 
+                                                color: '#fff', 
+                                                marginRight: '10px',
+                                                backgroundColor: isActive('/event-list') ? '#7FA1C3' : 'inherit',
+                                                '&:hover': { backgroundColor: '#7FA1C3' },
+                                                fontWeight: isActive('/event-list') ? 'bold' : 'normal',
+                                            }}
+                                        >
+                                            Events
+                                        </Button>
+                                        <Button 
+                                            component={Link} 
+                                            to="/volunteer-history" 
+                                            sx={{ 
+                                                color: '#fff', 
+                                                marginRight: '10px',
+                                                backgroundColor: isActive('/volunteer-history') ? '#7FA1C3' : 'inherit',
+                                                '&:hover': { backgroundColor: '#7FA1C3' },
+                                                fontWeight: isActive('/volunteer-history') ? 'bold' : 'normal',
+                                            }}
+                                        >
+                                            Volunteer History
+                                        </Button>
+                                        <Button 
+                                            component={Link} 
+                                            to="/notification" 
+                                            sx={{ 
+                                                color: '#fff', 
+                                                marginRight: '10px',
+                                                backgroundColor: isActive('/notification') ? '#7FA1C3' : 'inherit',
+                                                '&:hover': { backgroundColor: '#7FA1C3' },
+                                                fontWeight: isActive('/notification') ? 'bold' : 'normal',
+                                            }}
+                                        >
+                                            Notifications
+                                        </Button>
+                                    </>
+                                )}
                             </>
                         )}
                     </Box>
@@ -205,15 +240,26 @@ const Navbar = ({ isLoggedIn, userName, handleLogout }) => {
                     </ListItem>
                     {isLoggedIn && (
                         <>
-                            <ListItem button onClick={() => handleNavigation('/event-management')}>
-                                <ListItemText primary="Event Manager" sx={{ color: '#E2DAD6' }} />
-                            </ListItem>
-                            <ListItem button onClick={() => handleNavigation('/volunteer-history')}>
-                                <ListItemText primary="Volunteer History" sx={{ color: '#E2DAD6' }} />
-                            </ListItem>
-                            <ListItem button onClick={() => handleNavigation('/volunteer-matching')}>
-                                <ListItemText primary="Volunteer Matching" sx={{ color: '#E2DAD6' }} />
-                            </ListItem>
+                            {userRole === 'admin' && (
+                                <>
+                                    <ListItem button onClick={() => handleNavigation('/event-management')}>
+                                        <ListItemText primary="Event Manager" sx={{ color: '#E2DAD6' }} />
+                                    </ListItem>
+                                    <ListItem button onClick={() => handleNavigation('/volunteer-matching')}>
+                                        <ListItemText primary="Volunteer Matching" sx={{ color: '#E2DAD6' }} />
+                                    </ListItem>
+                                </>
+                            )}
+                            {userRole === 'user' && (
+                                <>
+                                    <ListItem button onClick={() => handleNavigation('/volunteer-history')}>
+                                        <ListItemText primary="Volunteer History" sx={{ color: '#E2DAD6' }} />
+                                    </ListItem>
+                                    <ListItem button onClick={() => handleNavigation('/notification')}>
+                                        <ListItemText primary="Notifications" sx={{ color: '#E2DAD6' }} />
+                                    </ListItem>
+                                </>
+                            )}
                             <ListItem button onClick={() => handleNavigation('/profile')}>
                                 <ListItemText primary="Profile" sx={{ color: '#E2DAD6' }} />
                             </ListItem>
