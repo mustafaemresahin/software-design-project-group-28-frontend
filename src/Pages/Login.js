@@ -43,6 +43,7 @@ const Login = ({ handleLoginState }) => {
                 }
 
                 navigate('/'); // Redirect to home after login
+                window.location.reload()
             } else {
                 setErrorMessage(data.message || 'Login failed. Please try again.');
             }
