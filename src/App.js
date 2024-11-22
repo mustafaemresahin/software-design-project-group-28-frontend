@@ -1,4 +1,3 @@
-// src/App.js
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import Home from './Pages/Home';
@@ -9,10 +8,15 @@ import Registration from './Pages/Registration';
 import VolunteerHistory from './Pages/VolunteerHistory';
 import EventManagementForm from './Pages/EventManagementForm';
 import EventList from './Pages/EventList';
+import Events from './Pages/Events';
 import EventDetails from './Pages/EventDetails';
 import VolunteerMatching from './Pages/VolunteerMatching';
 import Profile from './Pages/Profile';
-import { useState, useEffect } from 'react'; // Added useEffect to check for login on page load
+import AdminDashboard from './Pages/AdminDashboard';
+import VolunteerReport from './Pages/VolunteerReport';
+import EventReport from './Pages/EventReport';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 
 const theme = createTheme({
@@ -33,45 +37,50 @@ const theme = createTheme({
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState(''); // New state for user's name
-  const [userId, setUserId] = useState('');     // For backend requests
+  const [userName, setUserName] = useState('');
+  const [userId, setUserId] = useState('');
+  const [userRole, setUserRole] = useState('');
 
-  // Check localStorage for token on app load
   useEffect(() => {
     const token = localStorage.getItem('token');
     const storedUserName = localStorage.getItem('userName');
-    const storedUserId = localStorage.getItem('userId'); // Assuming you store userId on login
+    const storedUserId = localStorage.getItem('userId');
 
-    console.log('Retrieved Token:', token);
-    console.log('Retrieved UserName:', storedUserName);
-    console.log('Retrieved UserId:', storedUserId);
-
-    // If token exists, assume the user is logged in
     if (token) {
       setIsLoggedIn(true);
-      setUserName(storedUserName); // Set the username from localStorage
-      setUserId(storedUserId); // Use the userId for backend requests
+      setUserName(storedUserName);
+      setUserId(storedUserId);
+      fetchUserRole(storedUserId, token);
     }
-
-    console.log('Stored User ID:', storedUserId); // Add this to check if it's being retrieved from localStorage
   }, []);
 
-  // Handle login
-  const handleLoginState = (name, id) => {
-    setIsLoggedIn(true);
-    setUserName(name); // Set the user's name after login
-    setUserId(id); // Store userId
-    localStorage.setItem('userName', name); // Persist the user's name in localStorage
-    localStorage.setItem('userId', id); // Persist the userId in localStorage
+  const fetchUserRole = async (userId, token) => {
+    try {
+      const response = await axios.get(`http://localhost:4000/profile/${userId}/role`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUserRole(response.data.role);
+    } catch (error) {
+      console.error('Error fetching user role:', error.message);
+    }
   };
 
-  // Handle logout
+  const handleLoginState = (name, id) => {
+    setIsLoggedIn(true);
+    setUserName(name);
+    setUserId(id);
+    localStorage.setItem('userName', name);
+    localStorage.setItem('userId', id);
+  };
+
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setUserName(''); // Clear the user's name on logout
-    localStorage.removeItem('token'); // Remove the token from localStorage
-    localStorage.removeItem('userName'); // Remove the username from localStorage
-    window.location.href = '/'; // Redirect to home
+    setUserName('');
+    setUserRole('');
+    localStorage.removeItem('token');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userId');
+    window.location.href = '/';
   };
 
   return (
@@ -79,21 +88,23 @@ function App() {
       <CssBaseline />
       <Router>
         <div>
-          {/* Pass userName and isLoggedIn to the Navbar */}
-          <Navbar isLoggedIn={isLoggedIn} userName={userName} handleLogout={handleLogout} />
+          <Navbar isLoggedIn={isLoggedIn} userName={userName} userRole={userRole} handleLogout={handleLogout} />
           <Routes>
-            <Route path="/" element={<Home />} />
-            {/* Pass handleLoginState to Login component */}
+            <Route path="/" element={<Home userRole={userRole} isLoggedIn={isLoggedIn} />} />
             <Route path="/login" element={<Login handleLoginState={handleLoginState} />} />
             <Route path="/signup" element={<Registration handleLoginState={handleLoginState} />} />
             <Route path="/create-event" element={isLoggedIn ? <EventManagementForm /> : <Login handleLoginState={handleLoginState} />} />
             <Route path="/event-management" element={isLoggedIn ? <EventList /> : <Login handleLoginState={handleLoginState} />} />
+            <Route path="/event-list" element={isLoggedIn ? <Events /> : <Login handleLoginState={handleLoginState} />} />
             <Route path="/events/:id" element={<EventDetails />} />
             <Route path="/volunteer-history" element={<VolunteerHistory />} />
-            {/* Pass userName to Notification as currentUser */}
             <Route path="/notification" element={<Notification currentUser={userId} />} />
             <Route path="/volunteer-matching" element={<VolunteerMatching />} />
             <Route path="/profile" element={<Profile />} />
+            
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/reports/volunteer" element={<VolunteerReport />} />
+            <Route path="/admin/reports/events" element={<EventReport />} />
           </Routes>
         </div>
       </Router>
