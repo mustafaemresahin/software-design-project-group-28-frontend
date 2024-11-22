@@ -21,6 +21,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 // Styled Components
+// Styled Components
 const StyledContainer = styled(Container)({
   marginTop: '20px',
   marginBottom: '20px',
@@ -102,6 +103,11 @@ const formatDate = (dateStr) => {
 };
 
 const VolunteerHistory = () => {
+  const [expandedRow, setExpandedRow] = useState(null);
+  const [volunteerHistory, setVolunteerHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [expandedRow, setExpandedRow] = useState(null);
   const [volunteerHistory, setVolunteerHistory] = useState([]);
   const [loading, setLoading] = useState(true);
