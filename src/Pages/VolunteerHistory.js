@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Collapse, Button, Fade, CircularProgress, Alert
+  Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, Collapse, Fade, CircularProgress, Alert, Checkbox
 } from '@mui/material';
 import { styled } from '@mui/system';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import CheckIcon from '@mui/icons-material/Check';
-import CancelIcon from '@mui/icons-material/Cancel';
 
-// Custom Styled Components (unchanged)
+// Styled Components
 const StyledContainer = styled(Container)({
   marginTop: '20px',
   marginBottom: '20px',
@@ -71,17 +69,6 @@ const StyledUrgencyCell = styled(TableCell)(({ urgency }) => ({
   fontSize: '14px',
 }));
 
-const statusIcon = (status) => {
-  switch (status) {
-    case 'Attended':
-      return <CheckIcon style={{ color: 'green' }} />;
-    case 'Missed':
-      return <CancelIcon style={{ color: 'red' }} />;
-    default:
-      return null;
-  }
-};
-
 const urgencyColor = (urgency) => {
   switch (urgency) {
     case 'High':
@@ -101,12 +88,11 @@ const formatDate = (dateStr) => {
 };
 
 const VolunteerHistory = () => {
-  const [expandedRow, setExpandedRow] = useState(null); // Track which row is expanded
-  const [volunteerHistory, setVolunteerHistory] = useState([]); // State to store fetched data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [expandedRow, setExpandedRow] = useState(null);
+  const [volunteerHistory, setVolunteerHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch volunteer history when component mounts
   useEffect(() => {
     const fetchVolunteerHistory = async () => {
       try {
@@ -144,6 +130,12 @@ const VolunteerHistory = () => {
     setExpandedRow(expandedRow === index ? null : index);
   };
 
+  const handleStatusChange = (index) => {
+    const updatedHistory = [...volunteerHistory];
+    updatedHistory[index].participationStatus = updatedHistory[index].participationStatus === 'Attended' ? 'Missed' : 'Attended';
+    setVolunteerHistory(updatedHistory);
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -155,7 +147,6 @@ const VolunteerHistory = () => {
   return (
     <Fade in={true} timeout={600}>
       <StyledContainer>
-        {/* Volunteer History Table */}
         <Box sx={{ flex: 1 }}>
           <StyledPaper>
             <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4, color: '#6482AD', fontWeight: 'bold' }}>
@@ -181,13 +172,18 @@ const VolunteerHistory = () => {
                           <StyledTableCell>{entry.eventName}</StyledTableCell>
                           <StyledTableCell>{formatDate(entry.eventDate)}</StyledTableCell>
                           <StyledUrgencyCell urgency={entry.urgency}>{entry.urgency}</StyledUrgencyCell>
-                          <StyledTableCell>{statusIcon(entry.participationStatus)}</StyledTableCell>
+                          <StyledTableCell>
+                            <Checkbox
+                              checked={entry.participationStatus === 'Attended'}
+                              onChange={() => handleStatusChange(index)}
+                              color="success"
+                            />
+                          </StyledTableCell>
                           <StyledTableCell>
                             {expandedRow === index ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                           </StyledTableCell>
                         </StyledTableRow>
 
-                        {/* Collapsible content */}
                         <TableRow>
                           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                             <Collapse in={expandedRow === index} timeout="auto" unmountOnExit>
