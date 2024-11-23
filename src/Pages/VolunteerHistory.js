@@ -108,11 +108,6 @@ const VolunteerHistory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [expandedRow, setExpandedRow] = useState(null);
-  const [volunteerHistory, setVolunteerHistory] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   useEffect(() => {
     const fetchVolunteerHistory = async () => {
       try {
